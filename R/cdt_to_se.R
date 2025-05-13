@@ -1,37 +1,99 @@
+#' Convert CDT File to SummarizedExperiment Object
+#'
+#' This function reads a CDT (Comprehensive Data Table) Excel file and converts it into a 
+#' `SummarizedExperiment` object. The function allows selecting specific data types and 
+#' optionally saves the resulting object to a file.
+#'
+#' @param cdt_path Character. Path to the CDT Excel file. Must exist.
+#' @param output_file Character. Path to save the resulting `SummarizedExperiment` object. 
+#'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated.
+#' @param save_file Logical. Whether to save the resulting `SummarizedExperiment` object 
+#'   to a file. Default is `FALSE`.
+#' @param data_type Character. The type of data to extract from the CDT file. Options are:
+#'   \itemize{
+#'     \item `"peak_area"`: Extracts peak area data (sheet 4).
+#'     \item `"batch_norm"`: Extracts batch normalized data (sheet 5).
+#'     \item `"match_norm_imputed"`: Extracts match normalized and imputed data (sheet 6).
+#'     \item `"mass_extracted"`: Extracts mass extracted data (sheet 7).
+#'     \item `"log_transformed"`: Extracts log-transformed data (sheet 8).
+#'   }
+#'   Default is `"match_norm_imputed"`.
+#'
+#' @return A `SummarizedExperiment` object containing:
+#'   \itemize{
+#'     \item `assays`: The assay data extracted from the CDT file.
+#'     \item `rowData`: Metadata for the rows (e.g., compounds).
+#'     \item `colData`: Metadata for the columns (e.g., samples).
+#'   }
+#'
+#' @details
+#' The function performs the following steps:
+#' \enumerate{
+#'   \item Validates the existence of the provided `cdt_path`.
+#'   \item Reads metadata (sheet 3) and row data (sheet 2) from the CDT file.
+#'   \item Extracts assay data based on the specified `data_type`.
+#'   \item Ensures consistency between metadata and assay data dimensions.
+#'   \item Constructs a `SummarizedExperiment` object.
+#'   \item Optionally saves the resulting object to a file if `save_file` is `TRUE`.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' # Convert a CDT file to a SummarizedExperiment object
+#' se <- cdt_to_se(
+#'   cdt_path = "path/to/cdt_file.xlsx",
+#'   save_file = TRUE,
+#'   data_type = "log_transformed"
+#' )
+#' }
+#'
+#' @importFrom openxlsx2 wb_to_df
+#' @importFrom SummarizedExperiment SummarizedExperiment
+#' @export
 cdt_to_se <- function(cdt_path,
                       output_file = NULL,
                       save_file = F,
-                      data_type = "match_norm_imputed") {
+                      data_type = "batch_norm_imputed") {
 
   # Define the path to the Excel file
   if (!file.exists(cdt_path)) stop("The provided cdt_path does not exist.")
   if (is.null(output_file) && save_file) output_file <- paste0("se_from_metabolon_", Sys.Date(), ".csv")
 
   # Load the metadata sheet
-  metadata <- read_xlsx(cdt_path, sheet = 3)
+  metadata <- openxlsx2::wb_to_df(cdt_path, sheet = 3)
+  metadata <- metadata[!rowSums(is.na(metadata)) == ncol(metadata), ]
   rownames(metadata) <- metadata$PARENT_SAMPLE_NAME
-  metadata <- metadata[, !colnames(metadata) %in% "PARENT_SAMPLE_NAME"]
+  # control_samples <- rownames(metadata[is.na(metadata[,"CLIENT_SAMPLE_ID"]), ])
+  control_samples <- is.na(metadata[,"CLIENT_SAMPLE_ID"])
+  # metadata <- metadata[, !rownames(metadata) %in% "CLIENT_SAMPLE_ID"]
+  metadata <- metadata[!control_samples, ]
 
-  rowdata <- read_xlsx(cdt_path, sheet = 2)
-  rownames(rowdata) <- rowdata$COMP_ID
+  rowdata <- openxlsx2::wb_to_df(cdt_path, sheet = 2)
+  rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ]
+  rownames(rowdata) <- rowdata$CHEM_ID
 
   # Load the assay data
   assay_data <- switch(data_type,
     "peak_area" = {
-      t(read_xlsx(cdt_path, sheet = 4, rowNames = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 4, row_names = TRUE))
+      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     "batch_norm" = {
-      t(read_xlsx(cdt_path, sheet = 5, rowNames = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 5, row_names = TRUE))
+      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
-    "match_norm_imputed" = {
-      t(read_xlsx(cdt_path, sheet = 6, rowNames = TRUE))
+    "batch_norm_imputed" = {
+      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 6, row_names = TRUE))
+      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     "mass_extracted" = {
-      t(read_xlsx(cdt_path, sheet = 7, rowNames = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 7, row_names = TRUE))
+      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     "log_transformed" = {
-      t(read_xlsx(cdt_path, sheet = 8, rowNames = TRUE))
-    },
+      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 8, row_names = TRUE))
+      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
+    }
   )
 
   # Check that the metadata dataframes are correct
@@ -46,6 +108,10 @@ cdt_to_se <- function(cdt_path,
   )
 
   # Save the SummarizedExperiment object
-  if (save_file) saveRDS(se, output_file)
+  if (save_file) {
+    dir.create(dirname(output_file), showWarnings = FALSE)
+    saveRDS(se, output_file)
+  }
   return(se)
   }
+#
