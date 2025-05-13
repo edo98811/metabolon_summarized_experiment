@@ -12,7 +12,7 @@
 #' @param output_file A character string specifying the output file path. If NULL and `save_file` is TRUE, 
 #' a default file name will be generated. Default is NULL.
 #' @param input_features A character string specifying the type of input features. 
-#' Options are "gene_symbol", "uniprot_id", or "ensemble_id". Default is "ensemble_id".
+#' Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id".
 #' @param organism A character string specifying the organism. Default is "Hs" (Homo sapiens).
 #' @param save_file A logical value indicating whether to save the output to a file. Default is FALSE.
 #' @return A data frame formatted for Metabolon, with columns: Feature, Omics, p-value, FDR, and FC.
@@ -43,9 +43,9 @@ results_to_metabolon <- function(table,
                                 custom_colnames = NULL,
                                 use_adj_pvalue = TRUE, 
                                 output_file = NULL, 
-                                input_features = "ensemble_id",
+                                input_features = "ensembl_id",
                                 organism = "Hs",
-                                save_file = F) {
+                                save_file = T) {
   
   # Check correctness of input
   if (!format %in% c("topTable", "DESeqResults", "edgeR", "Custom")) {
@@ -126,49 +126,50 @@ results_to_metabolon <- function(table,
   }
 
   # Make the rownames conform to the metabolon format and transpose the assay
-  results_for_metabolon <- switch(input_features,
-    "gene_symbol" = {
-      gene_ids <- mapIds(
-        org.Hs.eg.db,
-        keys = rownames(se),
-        column = "ENSEMBL",
-        keytype = "SYMBOL",
-        multiVals = "first"
-      )
-      unmapped <- is.na(uniprot_ids)
-      if (any(unmapped)) {
-        warning("Some rows could not be mapped to UniProt IDs and will be removed.")
-        results_for_metabolon <- results_for_metabolon[!unmapped, , drop = FALSE]
-        uniprot_ids <- uniprot_ids[!unmapped]
-      }
-      colnames(results_for_metabolon) <- make.names(uniprot_ids, unique = TRUE)
-      results_for_metabolon
-    },
+  results_for_metabolon <- map_genes(rownames(results_for_metabolon), results_for_metabolon, input_features)
+  # results_for_metabolon <- switch(input_features,
+  #   "gene_symbol" = {
+  #     gene_ids <- mapIds(
+  #       org.Hs.eg.db,
+  #       keys = rownames(results_for_metabolon),
+  #       column = "ENSEMBL",
+  #       keytype = "SYMBOL",
+  #       multiVals = "first"
+  #     )
+  #     unmapped <- is.na(uniprot_ids)
+  #     if (any(unmapped)) {
+  #       warning("Some rows could not be mapped to UniProt IDs and will be removed.")
+  #       results_for_metabolon <- results_for_metabolon[!unmapped, , drop = FALSE]
+  #       uniprot_ids <- uniprot_ids[!unmapped]
+  #     }
+  #     colnames(results_for_metabolon) <- make.names(uniprot_ids, unique = TRUE)
+  #     results_for_metabolon
+  #   },
     
-    "uniprot_id" = {
-      uniprot_ids <- mapIds(
-      org.Hs.eg.db,
-      keys = rownames(se),
-      column = "ENSEMBL",
-      keytype = "UNIPROT",
-      multiVals = "first"
-      )
-      unmapped <- is.na(uniprot_ids)
-      if (any(unmapped)) {
-        warning("Some rows could not be mapped to UniProt IDs and will be removed.")
-        results_for_metabolon <- results_for_metabolon[!unmapped, , drop = FALSE]
-        uniprot_ids <- uniprot_ids[!unmapped]
-      }
-      colnames(results_for_metabolon) <- make.names(uniprot_ids, unique = TRUE)
-      results_for_metabolon
-    },
-    "ensembl_id" = {
-      # No mapping needed; retain original Ensembl IDs
-      results_for_metabolon
-    },
+  #   "uniprot_id" = {
+  #     uniprot_ids <- mapIds(
+  #     org.Hs.eg.db,
+  #     keys = rownames(results_for_metabolon),
+  #     column = "ENSEMBL",
+  #     keytype = "UNIPROT",
+  #     multiVals = "first"
+  #     )
+  #     unmapped <- is.na(uniprot_ids)
+  #     if (any(unmapped)) {
+  #       warning("Some rows could not be mapped to UniProt IDs and will be removed.")
+  #       results_for_metabolon <- results_for_metabolon[!unmapped, , drop = FALSE]
+  #       uniprot_ids <- uniprot_ids[!unmapped]
+  #     }
+  #     colnames(results_for_metabolon) <- make.names(uniprot_ids, unique = TRUE)
+  #     results_for_metabolon
+  #   },
+  #   "ensembl_id" = {
+  #     # No mapping needed; retain original Ensembl IDs
+  #     results_for_metabolon
+  #   },
 
-    stop("Invalid input_features. Choose from 'gene_symbol', 'uniprot_id', or 'ensembl_id'")
-  )
+  #   stop("Invalid input_features. Choose from 'gene_symbol', 'uniprot_id', or 'ensembl_id'")
+  # )
   
   # Write the output to a file
   if (save_file) {

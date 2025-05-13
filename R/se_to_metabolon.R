@@ -7,7 +7,7 @@
 #' @param se A `SummarizedExperiment` object. The input data to be converted.
 #' @param cdt A parameter (not used in the current implementation).
 #' @param input_features A character string specifying the type of input features. 
-#'   Options are `"ensemble_id"` (default), `"gene_symbol"`, or `"uniprot_id"`.
+#'   Options are `"ensembl_id"` (default), `"gene_symbol"`, or `"uniprot_id"`.
 #' @param output_file A character string specifying the path to save the output file. 
 #'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated.
 #' @param organism A character string specifying the organism. Default is `"Hs"` 
@@ -37,7 +37,7 @@ se_to_metabolon <- function(se,
                             input_features = "ensembl_id",
                             output_file = NULL, 
                             organism = "Hs",
-                            save_file = F) {
+                            save_file = T) {
 
   # Check correctness of input
   if (!inherits(se, "SummarizedExperiment")) stop("The input object is not a SummarizedExperiment.")
@@ -55,49 +55,49 @@ se_to_metabolon <- function(se,
   # anns <- create_annotations(se, organism = organism, annotation_type = input_features)
 
   # Make the rownames conform to the metabolon format and transpose the assay
-  assay_transposed <- switch(input_features,
-    "gene_symbol" = {
-      gene_ids <- mapIds(
-        org.Hs.eg.db,
-        keys = rownames(se),
-        column = "ENSEMBL",
-        keytype = "SYMBOL",
-        multiVals = "first"
-      )
-      unmapped <- is.na(uniprot_ids)
-      if (any(unmapped)) {
-        warning("Some rows could not be mapped to UniProt IDs and will be removed.")
-        assay_transposed <- assay_transposed[!unmapped, , drop = FALSE]
-        uniprot_ids <- uniprot_ids[!unmapped]
-      }
-      colnames(assay_transposed) <- make.names(uniprot_ids, unique = TRUE)
-      assay_transposed
-    },
+  assay_transposed <- map_genes(rownames(se), assay_transposed, input_features)
+  # assay_transposed <- switch(input_features,
+  #   "gene_symbol" = {
+  #     gene_ids <- mapIds(
+  #       org.Hs.eg.db,
+  #       keys = rownames(se),
+  #       column = "ENSEMBL",
+  #       keytype = "SYMBOL",
+  #       multiVals = "first"
+  #     )
+  #     unmapped <- is.na(uniprot_ids)
+  #     if (any(unmapped)) {
+  #       warning("Some rows could not be mapped to UniProt IDs and will be removed.")
+  #       assay_transposed <- assay_transposed[!unmapped, , drop = FALSE]
+  #       uniprot_ids <- uniprot_ids[!unmapped]
+  #     }
+  #     colnames(assay_transposed) <- make.names(uniprot_ids, unique = TRUE)
+  #     assay_transposed
+  #   },
     
-    "uniprot_id" = {
-      uniprot_ids <- mapIds(
-      org.Hs.eg.db,
-      keys = rownames(se),
-      column = "ENSEMBL",
-      keytype = "UNIPROT",
-      multiVals = "first"
-      )
-      unmapped <- is.na(uniprot_ids)
-      if (any(unmapped)) {
-        warning("Some rows could not be mapped to UniProt IDs and will be removed.")
-        assay_transposed <- assay_transposed[!unmapped, , drop = FALSE]
-        uniprot_ids <- uniprot_ids[!unmapped]
-      }
-      colnames(assay_transposed) <- make.names(uniprot_ids, unique = TRUE)
-      assay_transposed
-    },
-    "ensembl_id" = {
-      # No mapping needed; retain original Ensembl IDs
-      assay_transposed
-    },
-
-    stop("Invalid input_features. Choose from 'gene_symbol', 'uniprot_id', or 'ensembl_id'")
-  )
+  #   "uniprot_id" = {
+  #     uniprot_ids <- mapIds(
+  #     org.Hs.eg.db,
+  #     keys = rownames(se),
+  #     column = "ENSEMBL",
+  #     keytype = "UNIPROT",
+  #     multiVals = "first"
+  #     )
+  #     unmapped <- is.na(uniprot_ids)
+  #     if (any(unmapped)) {
+  #       warning("Some rows could not be mapped to UniProt IDs and will be removed.")
+  #       assay_transposed <- assay_transposed[!unmapped, , drop = FALSE]
+  #       uniprot_ids <- uniprot_ids[!unmapped]
+  #     }
+  #     colnames(assay_transposed) <- make.names(uniprot_ids, unique = TRUE)
+  #     assay_transposed
+  #   },
+  #   "ensembl_id" = {
+  #     # No mapping needed; retain original Ensembl IDs
+  #     assay_transposed
+  #   },
+  #   stop("Invalid input_features. Choose from 'gene_symbol', 'uniprot_id', or 'ensembl_id'")
+  # )
 
   # Write the output to a file
   if (save_file) {

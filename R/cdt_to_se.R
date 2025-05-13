@@ -52,7 +52,7 @@
 #' @export
 cdt_to_se <- function(cdt_path,
                       output_file = NULL,
-                      save_file = F,
+                      save_file = T,
                       data_type = "batch_norm_imputed") {
 
   # Define the path to the Excel file

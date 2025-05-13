@@ -11,7 +11,7 @@ results_to_metabolon(
   custom_colnames = NULL,
   use_adj_pvalue = TRUE,
   output_file = NULL,
-  input_features = "ensemble_id",
+  input_features = "ensembl_id",
   organism = "Hs",
   save_file = F
 )
@@ -34,7 +34,7 @@ Must include at least "p-value", "FDR", and "FC". Default is NULL.}
 a default file name will be generated. Default is NULL.}
 
 \item{input_features}{A character string specifying the type of input features.
-Options are "gene_symbol", "uniprot_id", or "ensemble_id". Default is "ensemble_id".}
+Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id".}
 
 \item{organism}{A character string specifying the organism. Default is "Hs" (Homo sapiens).}
 

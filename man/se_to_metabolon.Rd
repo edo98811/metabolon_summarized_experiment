@@ -19,7 +19,7 @@ se_to_metabolon(
 \item{cdt}{A parameter (not used in the current implementation).}
 
 \item{input_features}{A character string specifying the type of input features.
-Options are \code{"ensemble_id"} (default), \code{"gene_symbol"}, or \code{"uniprot_id"}.}
+Options are \code{"ensembl_id"} (default), \code{"gene_symbol"}, or \code{"uniprot_id"}.}
 
 \item{output_file}{A character string specifying the path to save the output file.
 If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated.}
