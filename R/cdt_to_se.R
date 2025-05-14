@@ -1,13 +1,13 @@
 #' Convert CDT File to SummarizedExperiment Object
 #'
-#' This function reads a CDT (Comprehensive Data Table) Excel file and converts it into a 
-#' `SummarizedExperiment` object. The function allows selecting specific data types and 
+#' This function reads a CDT (Comprehensive Data Table) Excel file and converts it into a
+#' `SummarizedExperiment` object. The function allows selecting specific data types and
 #' optionally saves the resulting object to a file.
 #'
 #' @param cdt_path Character. Path to the CDT Excel file. Must exist.
-#' @param output_file Character. Path to save the resulting `SummarizedExperiment` object. 
+#' @param output_file Character. Path to save the resulting `SummarizedExperiment` object.
 #'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated.
-#' @param save_file Logical. Whether to save the resulting `SummarizedExperiment` object 
+#' @param save_file Logical. Whether to save the resulting `SummarizedExperiment` object
 #'   to a file. Default is `FALSE`.
 #' @param data_type Character. The type of data to extract from the CDT file. Options are:
 #'   \itemize{
@@ -60,19 +60,55 @@ cdt_to_se <- function(cdt_path,
   if (is.null(output_file) && save_file) output_file <- paste0("se_from_metabolon_", Sys.Date(), ".csv")
 
   # Load the metadata sheet
-  metadata <- openxlsx2::wb_to_df(cdt_path, sheet = 3)
+  metadata <- make_metadata(openxlsx2::wb_to_df(cdt_path, sheet = 3))
+
+  # Load the row data sheet
+  rowdata <- make_rowdata(openxlsx2::wb_to_df(cdt_path, sheet = 2))
+
+  # Load the assay data
+  assay_data <- load_assay_data(cdt_path, data_type)
+
+  # Check that the metadata dataframes are correct
+  stopifnot(all(rownames(rowdata) == rownames(assay_data)))
+  stopifnot(all(rownames(metadata) == colnames(assay_data)))
+
+  # Create the SummarizedExperiment object
+  se <- SummarizedExperiment(
+    assays = list(counts = assay_data),
+    rowData = rowdata,
+    colData = metadata
+  )
+
+  # Save the SummarizedExperiment object
+  if (save_file) {
+    message("Saving results to: ", output_file)
+    dir.create(dirname(output_file), showWarnings = FALSE)
+    saveRDS(se, output_file)
+  }
+  return(se)
+}
+
+make_rowdata <- function(rowdata) {
+
+  rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ]
+  rownames(rowdata) <- rowdata$CHEM_ID
+  return(rowdata)
+}
+
+make_metadata <- function(metadata) {
+
   metadata <- metadata[!rowSums(is.na(metadata)) == ncol(metadata), ]
   rownames(metadata) <- metadata$PARENT_SAMPLE_NAME
   # control_samples <- rownames(metadata[is.na(metadata[,"CLIENT_SAMPLE_ID"]), ])
-  control_samples <- is.na(metadata[,"CLIENT_SAMPLE_ID"])
+  control_samples <- is.na(metadata[, "CLIENT_SAMPLE_ID"])
   # metadata <- metadata[, !rownames(metadata) %in% "CLIENT_SAMPLE_ID"]
   metadata <- metadata[!control_samples, ]
 
-  rowdata <- openxlsx2::wb_to_df(cdt_path, sheet = 2)
-  rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ]
-  rownames(rowdata) <- rowdata$CHEM_ID
+  return(metadata)
+}
+#
 
-  # Load the assay data
+load_assay_data <- function(cdt_path, data_type) {
   assay_data <- switch(data_type,
     "peak_area" = {
       assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 4, row_names = TRUE))
@@ -93,25 +129,7 @@ cdt_to_se <- function(cdt_path,
     "log_transformed" = {
       assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 8, row_names = TRUE))
       assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
-    }
+    },
+    stop("Invalid data type. Choose from 'peak_area', 'batch_norm', 'batch_norm_imputed', 'mass_extracted', or 'log_transformed'")
   )
-
-  # Check that the metadata dataframes are correct
-  stopifnot(all(rownames(rowdata) == rownames(assay_data)))
-  stopifnot(all(rownames(metadata) == colnames(assay_data)))
-
-  # Create the SummarizedExperiment object
-  se <- SummarizedExperiment(
-    assays = list(counts = assay_data),
-    rowData = rowdata,
-    colData = metadata
-  )
-
-  # Save the SummarizedExperiment object
-  if (save_file) {
-    dir.create(dirname(output_file), showWarnings = FALSE)
-    saveRDS(se, output_file)
-  }
-  return(se)
-  }
-#
+}
