@@ -4,7 +4,7 @@
 #' `SummarizedExperiment` object. The function allows selecting specific data types and
 #' optionally saves the resulting object to a file.
 #'
-#' @param cdt_path Character. Path to the CDT Excel file. Must exist.
+#' @param cdt Character. Path to the CDT Excel file. Must exist.
 #' @param output_file Character. Path to save the resulting `SummarizedExperiment` object.
 #'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated.
 #' @param save_file Logical. Whether to save the resulting `SummarizedExperiment` object
@@ -29,7 +29,7 @@
 #' @details
 #' The function performs the following steps:
 #' \enumerate{
-#'   \item Validates the existence of the provided `cdt_path`.
+#'   \item Validates the existence of the provided `cdt`.
 #'   \item Reads metadata (sheet 3) and row data (sheet 2) from the CDT file.
 #'   \item Extracts assay data based on the specified `data_type`.
 #'   \item Ensures consistency between metadata and assay data dimensions.
@@ -41,7 +41,7 @@
 #' \dontrun{
 #' # Convert a CDT file to a SummarizedExperiment object
 #' se <- cdt_to_se(
-#'   cdt_path = "path/to/cdt_file.xlsx",
+#'   cdt = "path/to/cdt_file.xlsx",
 #'   save_file = TRUE,
 #'   data_type = "log_transformed"
 #' )
@@ -50,23 +50,23 @@
 #' @importFrom openxlsx2 wb_to_df
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @export
-cdt_to_se <- function(cdt_path,
+cdt_to_se <- function(cdt,
                       output_file = NULL,
                       save_file = T,
                       data_type = "batch_norm_imputed") {
 
   # Define the path to the Excel file
-  if (!file.exists(cdt_path)) stop("The provided cdt_path does not exist.")
+  if (!file.exists(cdt)) stop("The provided cdt does not exist.")
   if (is.null(output_file) && save_file) output_file <- paste0("se_from_metabolon_", Sys.Date(), ".csv")
 
   # Load the metadata sheet
-  metadata <- make_metadata(openxlsx2::wb_to_df(cdt_path, sheet = 3))
+  metadata <- make_metadata(openxlsx2::wb_to_df(cdt, sheet = 3))
 
   # Load the row data sheet
-  rowdata <- make_rowdata(openxlsx2::wb_to_df(cdt_path, sheet = 2))
+  rowdata <- make_rowdata(openxlsx2::wb_to_df(cdt, sheet = 2))
 
   # Load the assay data
-  assay_data <- load_assay_data(cdt_path, data_type)
+  assay_data <- load_assay_data(cdt, data_type)
 
   # Check that the metadata dataframes are correct
   stopifnot(all(rownames(rowdata) == rownames(assay_data)))
@@ -108,26 +108,26 @@ make_metadata <- function(metadata) {
 }
 #
 
-load_assay_data <- function(cdt_path, data_type) {
+load_assay_data <- function(cdt, data_type) {
   assay_data <- switch(data_type,
     "peak_area" = {
-      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 4, row_names = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 4, row_names = TRUE))
       assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     "batch_norm" = {
-      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 5, row_names = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 5, row_names = TRUE))
       assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     "batch_norm_imputed" = {
-      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 6, row_names = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 6, row_names = TRUE))
       assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     "mass_extracted" = {
-      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 7, row_names = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 7, row_names = TRUE))
       assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     "log_transformed" = {
-      assay_data <- t(openxlsx2::wb_to_df(cdt_path, sheet = 8, row_names = TRUE))
+      assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 8, row_names = TRUE))
       assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
     },
     stop("Invalid data type. Choose from 'peak_area', 'batch_norm', 'batch_norm_imputed', 'mass_extracted', or 'log_transformed'")

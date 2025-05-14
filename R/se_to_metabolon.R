@@ -41,7 +41,10 @@ se_to_metabolon <- function(se,
   # Check correctness of input
   if (!inherits(se, "SummarizedExperiment")) stop("The input object is not a SummarizedExperiment.")
   if (is.null(output_file) && save_file) output_file <- paste0("se_to_metabolon_", Sys.Date(), ".csv")
-
+  # Check if organism is valid
+  if (!organism %in% c("Mm", "Hs")) {
+    stop("Invalid organism. Choose either 'Mm' (Mus musculus) or 'Hs' (Homo sapiens).")
+  }
   # Read metadata
   metadata <- openxlsx2::read_xlsx(cdt, sheet = 3, rowNames = TRUE)
 
@@ -52,7 +55,7 @@ se_to_metabolon <- function(se,
   assay_transposed$PARENT_SAMPLE_NAME <- rownames(metadata)[match(rownames(assay_transposed), metadata$CLIENT_SAMPLE_ID)]
 
   # Make the rownames conform to the metabolon format and transpose the assay
-  assay_transposed <- map_genes(rownames(se), assay_transposed, input_features)
+  assay_transposed <- map_genes(rownames(se), assay_transposed, input_features, organism)
 
   # Write the output to a file
   if (save_file) {

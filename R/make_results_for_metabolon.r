@@ -22,7 +22,7 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
     )
   } else if (format == "DESeqResults") {
     # Check if the input inherits from data frame
-    if (!inherits(table, "DESeqResults")) stop("Input 'table' must inherit from class DESeqResults.")
+    if (!(inherits(table, "DESeqResults") || inherits(table, "data.frame"))) stop("Input 'table' must inherit from class DESeqResults.")
     table <- as.data.frame(table)
 
     # Check if the input has the required columns

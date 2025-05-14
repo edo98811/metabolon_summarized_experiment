@@ -5,14 +5,14 @@
 \title{Convert CDT File to SummarizedExperiment Object}
 \usage{
 cdt_to_se(
-  cdt_path,
+  cdt,
   output_file = NULL,
-  save_file = F,
+  save_file = T,
   data_type = "batch_norm_imputed"
 )
 }
 \arguments{
-\item{cdt_path}{Character. Path to the CDT Excel file. Must exist.}
+\item{cdt}{Character. Path to the CDT Excel file. Must exist.}
 
 \item{output_file}{Character. Path to save the resulting \code{SummarizedExperiment} object.
 If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated.}
@@ -46,7 +46,7 @@ optionally saves the resulting object to a file.
 \details{
 The function performs the following steps:
 \enumerate{
-\item Validates the existence of the provided \code{cdt_path}.
+\item Validates the existence of the provided \code{cdt}.
 \item Reads metadata (sheet 3) and row data (sheet 2) from the CDT file.
 \item Extracts assay data based on the specified \code{data_type}.
 \item Ensures consistency between metadata and assay data dimensions.
@@ -58,7 +58,7 @@ The function performs the following steps:
 \dontrun{
 # Convert a CDT file to a SummarizedExperiment object
 se <- cdt_to_se(
-  cdt_path = "path/to/cdt_file.xlsx",
+  cdt = "path/to/cdt_file.xlsx",
   save_file = TRUE,
   data_type = "log_transformed"
 )

@@ -50,6 +50,10 @@ results_to_metabolon <- function(table,
   if (!format %in% c("topTable", "DESeqResults", "edgeR", "Custom")) {
     stop("Invalid format. Choose from 'topTable', 'DESeqResults', 'Custom' or 'edgeR'.")
   }
+  # Check if organism is valid
+  if (!organism %in% c("Mm", "Hs")) {
+    stop("Invalid organism. Choose either 'Mm' (Mus musculus) or 'Hs' (Homo sapiens).")
+  }
   if (is.null(output_file) && save_file) output_file <- paste0("results_to_metabolon_", Sys.Date(), ".csv")
   if (format == "edgeR") stop("edgeR format is not supported yet.")
 
@@ -57,7 +61,7 @@ results_to_metabolon <- function(table,
   results_for_metabolon <- make_results_for_metabolon(table, format, omics, custom_colnames)
 
   # Make the rownames conform to the metabolon format and transpose the assay
-  results_for_metabolon <- map_genes(rownames(results_for_metabolon), results_for_metabolon, input_features)
+  results_for_metabolon <- map_genes(results_for_metabolon$Feature, results_for_metabolon, input_features, organism)
 
   # Write the output to a file
   if (save_file) {

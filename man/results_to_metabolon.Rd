@@ -9,11 +9,10 @@ results_to_metabolon(
   format = "topTable",
   omics = "transcriptomics",
   custom_colnames = NULL,
-  use_adj_pvalue = TRUE,
   output_file = NULL,
   input_features = "ensembl_id",
   organism = "Hs",
-  save_file = F
+  save_file = T
 )
 }
 \arguments{
@@ -27,8 +26,6 @@ or "Custom". Default is "topTable".}
 
 \item{custom_colnames}{A character vector specifying custom column names for "Custom" format.
 Must include at least "p-value", "FDR", and "FC". Default is NULL.}
-
-\item{use_adj_pvalue}{A logical value indicating whether to use adjusted p-values. Default is TRUE.}
 
 \item{output_file}{A character string specifying the output file path. If NULL and \code{save_file} is TRUE,
 a default file name will be generated. Default is NULL.}

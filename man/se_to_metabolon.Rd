@@ -10,13 +10,13 @@ se_to_metabolon(
   input_features = "ensembl_id",
   output_file = NULL,
   organism = "Hs",
-  save_file = F
+  save_file = T
 )
 }
 \arguments{
-\item{se}{A \code{SummarizedExperiment} object. The input data to be converted.}
+\item{se}{A \code{SummarizedExperiment} (or derived) object. The input data to be converted.}
 
-\item{cdt}{A parameter (not used in the current implementation).}
+\item{cdt}{A the client data table from metabolon.}
 
 \item{input_features}{A character string specifying the type of input features.
 Options are \code{"ensembl_id"} (default), \code{"gene_symbol"}, or \code{"uniprot_id"}.}
@@ -25,14 +25,13 @@ Options are \code{"ensembl_id"} (default), \code{"gene_symbol"}, or \code{"unipr
 If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated.}
 
 \item{organism}{A character string specifying the organism. Default is \code{"Hs"}
-(Homo sapiens).}
+(Homo sapiens), Options are: "Mm".}
 
 \item{save_file}{A logical value indicating whether to save the output to a file.
 Default is \code{FALSE}.}
 }
 \value{
-A transposed assay matrix with row names and column names formatted
-according to the specified \code{input_features}.
+A transposed assay matrix with row names and column names formatted according to the standard required by metabolon.
 }
 \description{
 This function converts a \code{SummarizedExperiment} object into a format compatible
@@ -42,9 +41,9 @@ and provides options to save the output to a file.
 \details{
 \itemize{
 \item The function checks if the input object is a \code{SummarizedExperiment}.
-\item Metadata is read from an external file (assumed to be in Excel format).
+\item Metadata is read from the CDT.
 \item Annotations are created based on the specified organism and input features.
-\item The assay matrix is transposed and formatted according to the input features.
+\item The assay matrix is transposed and formatted according to the metabolon standard.
 \item If \code{save_file} is \code{TRUE}, the output is written to a CSV file.
 }
 }
