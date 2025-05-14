@@ -1,6 +1,6 @@
 # Introduction
 
-This is a package used to create reports, 
+This is a package used as interface from standard bioinformatics pipelines to the metabolon software 
 
 # Installation 
 
