@@ -5,7 +5,7 @@
 #' and provides options to save the output to a file.
 #'
 #' @param se A `SummarizedExperiment` (or derived) object. The input data to be converted.
-#' @param cdt A the client data table from metabolon.
+#' @param cdt The client data table from metabolon.
 #' @param input_features A character string specifying the type of input features. 
 #'   Options are `"ensembl_id"` (default), `"gene_symbol"`, or `"uniprot_id"`.
 #' @param output_file A character string specifying the path to save the output file. 
@@ -13,7 +13,7 @@
 #' @param organism A character string specifying the organism. Default is `"Hs"` 
 #'   (Homo sapiens), Options are: "Mm".
 #' @param save_file A logical value indicating whether to save the output to a file. 
-#'   Default is `FALSE`.
+#'   Default is `TRUE`.
 #'
 #' @return A transposed assay matrix with row names and column names formatted according to the standard required by metabolon.
 #'
@@ -27,7 +27,7 @@
 #' @examples
 #' \dontrun{
 #' se <- SummarizedExperiment::SummarizedExperiment()
-#' result <- se_to_metabolon(se, cdt = NULL, input_features = "gene_symbol", save_file = TRUE)
+#' result <- se_to_metabolon(se, cdt = "cdt.xlsx", input_features = "gene_symbol", save_file = TRUE)
 #' }
 #'
 #' @export

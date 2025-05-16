@@ -8,16 +8,17 @@
 #' @param output_file Character. Path to save the resulting `SummarizedExperiment` object.
 #'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated.
 #' @param save_file Logical. Whether to save the resulting `SummarizedExperiment` object
-#'   to a file. Default is `FALSE`.
+#'   to a file. Default is `TRUE`. If `FALSE`, the object will be returned. If a path is not provided,
+#'   a default filename will be generated based on the current date and saved in the working directory.
 #' @param data_type Character. The type of data to extract from the CDT file. Options are:
 #'   \itemize{
 #'     \item `"peak_area"`: Extracts peak area data (sheet 4).
 #'     \item `"batch_norm"`: Extracts batch normalized data (sheet 5).
-#'     \item `"match_norm_imputed"`: Extracts match normalized and imputed data (sheet 6).
+#'     \item `"batch_norm_imputed"`: Extracts batch normalized and imputed data (sheet 6).
 #'     \item `"mass_extracted"`: Extracts mass extracted data (sheet 7).
 #'     \item `"log_transformed"`: Extracts log-transformed data (sheet 8).
 #'   }
-#'   Default is `"match_norm_imputed"`.
+#'   Default is `"mbtch_norm_imputed"`.
 #'
 #' @return A `SummarizedExperiment` object containing:
 #'   \itemize{
@@ -42,7 +43,7 @@
 #' # Convert a CDT file to a SummarizedExperiment object
 #' se <- cdt_to_se(
 #'   cdt = "path/to/cdt_file.xlsx",
-#'   save_file = TRUE,
+#'   save_file = FALSE,
 #'   data_type = "log_transformed"
 #' )
 #' }

@@ -12,8 +12,9 @@
 #' a default file name will be generated. Default is NULL.
 #' @param input_features A character string specifying the type of input features. 
 #' Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id".
-#' @param organism A character string specifying the organism. Default is "Hs" (Homo sapiens).
-#' @param save_file A logical value indicating whether to save the output to a file. Default is FALSE.
+#' @param organism A character string specifying the organism. Can be "Mm" or "Hs". Default is "Hs" (Homo sapiens).
+#' @param save_file A logical value indicating whether to save the output to a file. Default is TRUE. If `FALSE`, the object will be returned. If a path is not provided,
+#'   a default filename will be generated based on the current date and saved in the working directory.
 #' @return A data frame formatted for Metabolon, with columns: Feature, Omics, p-value, FDR, and FC.
 #' @details The function checks the correctness of the input format and ensures that the required 
 #' columns are present in the input table. It supports workflows for "topTable" (limma), 
@@ -40,7 +41,6 @@ results_to_metabolon <- function(table,
                                 format = "topTable",
                                 omics = "Transcriptomics",
                                 custom_colnames = NULL,
-#                                 use_adj_pvalue = TRUE, 
                                 output_file = NULL, 
                                 input_features = "ensembl_id",
                                 organism = "Hs",
