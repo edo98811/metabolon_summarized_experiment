@@ -7,7 +7,7 @@
 results_to_metabolon(
   table,
   format = "topTable",
-  omics = "transcriptomics",
+  omics = "Transcriptomics",
   custom_colnames = NULL,
   output_file = NULL,
   input_features = "ensembl_id",
@@ -33,9 +33,10 @@ a default file name will be generated. Default is NULL.}
 \item{input_features}{A character string specifying the type of input features.
 Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id".}
 
-\item{organism}{A character string specifying the organism. Default is "Hs" (Homo sapiens).}
+\item{organism}{A character string specifying the organism. Can be "Mm" or "Hs". Default is "Hs" (Homo sapiens).}
 
-\item{save_file}{A logical value indicating whether to save the output to a file. Default is FALSE.}
+\item{save_file}{A logical value indicating whether to save the output to a file. Default is TRUE. If \code{FALSE}, the object will be returned. If a path is not provided,
+a default filename will be generated based on the current date and saved in the working directory.}
 }
 \value{
 A data frame formatted for Metabolon, with columns: Feature, Omics, p-value, FDR, and FC.

@@ -16,7 +16,7 @@ se_to_metabolon(
 \arguments{
 \item{se}{A \code{SummarizedExperiment} (or derived) object. The input data to be converted.}
 
-\item{cdt}{A the client data table from metabolon.}
+\item{cdt}{The client data table from metabolon.}
 
 \item{input_features}{A character string specifying the type of input features.
 Options are \code{"ensembl_id"} (default), \code{"gene_symbol"}, or \code{"uniprot_id"}.}
@@ -28,7 +28,7 @@ If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be g
 (Homo sapiens), Options are: "Mm".}
 
 \item{save_file}{A logical value indicating whether to save the output to a file.
-Default is \code{FALSE}.}
+Default is \code{TRUE}.}
 }
 \value{
 A transposed assay matrix with row names and column names formatted according to the standard required by metabolon.
@@ -50,7 +50,7 @@ and provides options to save the output to a file.
 \examples{
 \dontrun{
 se <- SummarizedExperiment::SummarizedExperiment()
-result <- se_to_metabolon(se, cdt = NULL, input_features = "gene_symbol", save_file = TRUE)
+result <- se_to_metabolon(se, cdt = "cdt.xlsx", input_features = "gene_symbol", save_file = TRUE)
 }
 
 }
