@@ -4,7 +4,7 @@ This is a package used as interface from standard bioinformatics pipelines to th
 
 # Installation 
 
-[https://github.com/edo98811/metabolon_summarized_experiment.git)](https://github.com/edo98811/metabolon_summarized_experiment.git)
+[https://github.com/edo98811/metabolon_summarized_experiment.git](https://github.com/edo98811/metabolon_summarized_experiment.git)
 
 To install this package, you can use the `remotes` package in R:
 
