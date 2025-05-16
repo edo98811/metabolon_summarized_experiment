@@ -49,13 +49,15 @@ se_to_metabolon <- function(se,
   metadata <- openxlsx2::read_xlsx(cdt, sheet = 3, rowNames = TRUE)
 
   # Get transposed matrix
-  assay_transposed <- as.data.frame(t(assay(se)))
+  assay <- as.data.frame(assay(se))
 
   # Add PARENT_SAMPLE_NAME column
-  assay_transposed$PARENT_SAMPLE_NAME <- rownames(metadata)[match(rownames(assay_transposed), metadata$CLIENT_SAMPLE_ID)]
+  assay_transposed <- t(assay)
+  assay_transposed$PARENT_SAMPLE_NAME <- rownames(metadata)[match(colnames(assay), metadata$CLIENT_SAMPLE_ID)]
 
   # Make the rownames conform to the metabolon format and transpose the assay
-  assay_transposed <- map_genes(rownames(se), assay_transposed, input_features, organism)
+  assay_transposed <- t(map_genes(rownames(se), assay, input_features, organism))
+  rm(assay)
 
   # Write the output to a file
   if (save_file) {

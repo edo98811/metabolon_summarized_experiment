@@ -18,14 +18,13 @@ map_genes <- function(keys_list, matrix, input_features, organism) {
       )
       unmapped <- is.na(gene_ids)
       if (any(unmapped)) {
-        warning("Some rows could not be mapped to UniProt IDs and will be removed.")
+        warning("Some rows could not be mapped to Ensembl IDs and will be removed.")
         matrix <- matrix[!unmapped, , drop = FALSE]
         gene_ids <- gene_ids[!unmapped]
       }
       rownames(matrix) <- make.names(gene_ids, unique = TRUE)
       matrix
     },
-    
     "uniprot_id" = {
       uniprot_ids <- AnnotationDbi::mapIds(
         orgdb,
@@ -36,7 +35,7 @@ map_genes <- function(keys_list, matrix, input_features, organism) {
       )
       unmapped <- is.na(uniprot_ids)
       if (any(unmapped)) {
-        warning("Some rows could not be mapped to UniProt IDs and will be removed.")
+        warning("Some rows could not be mapped to Ensembl IDs and will be removed.")
         matrix <- matrix[!unmapped, , drop = FALSE]
         uniprot_ids <- uniprot_ids[!unmapped]
       }
