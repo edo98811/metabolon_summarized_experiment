@@ -64,8 +64,6 @@ se_to_metabolon <- function(se,
     message("Saving results to: ", output_file)
     dir.create(dirname(output_file), showWarnings = FALSE)
     write.table(assay_transposed, output_file, sep = ",", row.names = TRUE)
-  }
-
-  return(assay_transposed)
+  } else return(assay_transposed)
 }
 

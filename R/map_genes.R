@@ -44,7 +44,12 @@ map_genes <- function(keys_list, matrix, input_features, organism) {
     },
     
     "ensembl_id" = {
+      tryCatch({
       # No mapping needed; retain original Ensembl IDs
+      rownames(matrix) <- make.names(keys_list, unique = TRUE)
+      }, error = function(e) {
+      stop("An error occurred while creating the results table IDs: ", e$message)
+      })
       matrix
     },
     

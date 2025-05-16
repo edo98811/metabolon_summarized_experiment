@@ -38,7 +38,7 @@
 #' @export
 results_to_metabolon <- function(table,
                                 format = "topTable",
-                                omics = "transcriptomics",
+                                omics = "Transcriptomics",
                                 custom_colnames = NULL,
 #                                 use_adj_pvalue = TRUE, 
                                 output_file = NULL, 
@@ -62,12 +62,12 @@ results_to_metabolon <- function(table,
 
   # Make the rownames conform to the metabolon format and transpose the assay
   results_for_metabolon <- map_genes(results_for_metabolon$Feature, results_for_metabolon, input_features, organism)
+  results_for_metabolon$Feature <- rownames(results_for_metabolon)
 
   # Write the output to a file
   if (save_file) {
     message("Saving results to: ", output_file)
     dir.create(dirname(output_file), showWarnings = FALSE)
-    write.table(results_for_metabolon, output_file, sep = ",", row.names = TRUE)
-  }
-  return(results_for_metabolon)
+    write.table(results_for_metabolon, output_file, sep = ",", row.names = FALSE)
+  } else return(results_for_metabolon)
 }
