@@ -1,2 +1,8 @@
 old/
 .DS_Store
+extdata/
+.vscode/
+*.Rproj
+.Rhistory
+.RData
+.Ruserdata
