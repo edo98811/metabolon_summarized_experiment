@@ -54,7 +54,8 @@
 cdt_to_se <- function(cdt,
                       output_file = NULL,
                       save_file = T,
-                      data_type = "batch_norm_imputed") {
+                      data_type = "batch_norm_imputed",
+                      rowdata_key = "INCHIKEY") {
 
   # Define the path to the Excel file
   if (!file.exists(cdt)) stop("The provided cdt does not exist.")
@@ -89,10 +90,14 @@ cdt_to_se <- function(cdt,
   return(se)
 }
 
-make_rowdata <- function(rowdata) {
+make_rowdata <- function(rowdata, rowdata_key) {
+
+  if (!rowdata_key %in% colnames(rowdata)) {
+    stop("The provided rowdata_key is not a column in the rowdata.")
+  }
 
   rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ]
-  rownames(rowdata) <- rowdata$CHEM_ID
+  rownames(rowdata) <- rowdata$INCHIKEY
   return(rowdata)
 }
 
