@@ -64,11 +64,14 @@ cdt_to_se <- function(cdt,
   # Load the metadata sheet
   metadata <- make_metadata(openxlsx2::wb_to_df(cdt, sheet = 3))
 
-  # Load the row data sheet
-  rowdata <- make_rowdata(openxlsx2::wb_to_df(cdt, sheet = 2))
-
   # Load the assay data
   assay_data <- load_assay_data(cdt, data_type)
+
+  # Load the row data sheet
+  rowdata <- make_rowdata(openxlsx2::wb_to_df(cdt, sheet = 2), rowdata_key = rowdata_key)
+  
+  # Ensure that the rownames of the assay_data match the rownames of the rowdata (delete absent rows)
+  assay_data <- assay_data[rownames(assay_data) %in% rowdata$CHEM_ID, ] 
 
   # Check that the metadata dataframes are correct
   stopifnot(all(rownames(rowdata) == rownames(assay_data)))
@@ -91,36 +94,44 @@ cdt_to_se <- function(cdt,
 }
 
 make_rowdata <- function(rowdata, rowdata_key) {
-
   # Check if the specified rowdata_key exists in the rowdata columns
   if (!rowdata_key %in% colnames(rowdata)) {
     stop("The provided rowdata_key is not a column in the rowdata.")
   }
 
   # Remove rows where all values are NA
-  rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ] 
-  
-  # Check for duplicated values in the rowdata_key column
-  if (anyDuplicated(rowdata[[rowdata_key]])) {
-    stop("Duplicated values found in the rowdata_key column.")
+  rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ]
+
+  # Check for missing values in the rowdata_key column and delete those rows
+  if (any(is.na(rowdata[[rowdata_key]]))) {
+    warning(
+      "Missing values found in the rowdata_key column. The following entities will be removed: ",
+      paste(rowdata[is.na(rowdata[[rowdata_key]]), ]$CHEM_ID, collapse = ", ")
+    )
+    rowdata <- rowdata[!is.na(rowdata[[rowdata_key]]), ]
   }
 
-  # Check for missing values in the rowdata_key column
-  if (any(is.na(rowdata[[rowdata_key]]))) {
-    stop("Missing values found in the rowdata_key column.")
+  # Check for duplicated values in the rowdata_key column
+  duplicated_rows <- rowdata[duplicated(rowdata[[rowdata_key]]), ]
+  if (nrow(duplicated_rows) > 0) {
+    warning(sprintf(
+      "Duplicated values found in the %s (rowdata_key) column. The following duplicates will be removed: %s",
+      rowdata_key,
+      paste(duplicated_rows[[rowdata_key]], collapse = ", ")
+    ))
+    rowdata <- rowdata[!duplicated(rowdata[[rowdata_key]]), ]
   }
 
   # Set the row names of the rowdata to the values in the INCHIKEY column
   rownames(rowdata) <- rowdata[[rowdata_key]]
-  
+
   return(rowdata)
 }
 
 make_metadata <- function(metadata) {
-
   metadata <- metadata[!rowSums(is.na(metadata)) == ncol(metadata), ]
   rownames(metadata) <- metadata$PARENT_SAMPLE_NAME
-  
+
   # control_samples <- rownames(metadata[is.na(metadata[,"CLIENT_SAMPLE_ID"]), ])
   control_samples <- is.na(metadata[, "CLIENT_SAMPLE_ID"])
   # metadata <- metadata[, !rownames(metadata) %in% "CLIENT_SAMPLE_ID"]
@@ -128,13 +139,13 @@ make_metadata <- function(metadata) {
 
   return(metadata)
 }
-#
 
 load_assay_data <- function(cdt, data_type) {
+  
   assay_data <- switch(data_type,
     "peak_area" = {
       assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 4, row_names = TRUE))
-      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
+      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ] # Remove rows with all NAs
     },
     "batch_norm" = {
       assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 5, row_names = TRUE))
@@ -146,7 +157,7 @@ load_assay_data <- function(cdt, data_type) {
     },
     "mass_extracted" = {
       assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 7, row_names = TRUE))
-      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ]
+      assay_data <- assay_data[!rowSums(is.na(assay_data)) == ncol(assay_data), ] 
     },
     "log_transformed" = {
       assay_data <- t(openxlsx2::wb_to_df(cdt, sheet = 8, row_names = TRUE))
