@@ -92,12 +92,27 @@ cdt_to_se <- function(cdt,
 
 make_rowdata <- function(rowdata, rowdata_key) {
 
+  # Check if the specified rowdata_key exists in the rowdata columns
   if (!rowdata_key %in% colnames(rowdata)) {
     stop("The provided rowdata_key is not a column in the rowdata.")
   }
 
-  rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ]
-  rownames(rowdata) <- rowdata$INCHIKEY
+  # Remove rows where all values are NA
+  rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ] 
+  
+  # Check for duplicated values in the rowdata_key column
+  if (anyDuplicated(rowdata[[rowdata_key]])) {
+    stop("Duplicated values found in the rowdata_key column.")
+  }
+
+  # Check for missing values in the rowdata_key column
+  if (any(is.na(rowdata[[rowdata_key]]))) {
+    stop("Missing values found in the rowdata_key column.")
+  }
+
+  # Set the row names of the rowdata to the values in the INCHIKEY column
+  rownames(rowdata) <- rowdata[[rowdata_key]]
+  
   return(rowdata)
 }
 
@@ -105,6 +120,7 @@ make_metadata <- function(metadata) {
 
   metadata <- metadata[!rowSums(is.na(metadata)) == ncol(metadata), ]
   rownames(metadata) <- metadata$PARENT_SAMPLE_NAME
+  
   # control_samples <- rownames(metadata[is.na(metadata[,"CLIENT_SAMPLE_ID"]), ])
   control_samples <- is.na(metadata[, "CLIENT_SAMPLE_ID"])
   # metadata <- metadata[, !rownames(metadata) %in% "CLIENT_SAMPLE_ID"]
