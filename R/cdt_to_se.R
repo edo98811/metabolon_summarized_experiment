@@ -71,14 +71,17 @@ cdt_to_se <- function(cdt,
   rowdata <- make_rowdata(openxlsx2::wb_to_df(cdt, sheet = 2), rowdata_key = rowdata_key)
   
   # Ensure that the rownames of the assay_data match the rownames of the rowdata (delete absent rows)
-  assay_data <- assay_data[rownames(assay_data) %in% rowdata$CHEM_ID, ] 
+  assay_data <- assay_data[rownames(assay_data) %in% rowdata$CHEM_ID,]
+  # Sort assay_data to match the order of rowdata
+  assay_data <- assay_data[match(rowdata$CHEM_ID, rownames(assay_data)), ]
+  rownames(assay_data) <- rownames(rowdata)
 
   # Check that the metadata dataframes are correct
   stopifnot(all(rownames(rowdata) == rownames(assay_data)))
   stopifnot(all(rownames(metadata) == colnames(assay_data)))
-
+  
   # Create the SummarizedExperiment object
-  se <- SummarizedExperiment(
+  se <- SummarizedExperiment::SummarizedExperiment(
     assays = list(counts = assay_data),
     rowData = rowdata,
     colData = metadata
@@ -94,6 +97,7 @@ cdt_to_se <- function(cdt,
 }
 
 make_rowdata <- function(rowdata, rowdata_key) {
+
   # Check if the specified rowdata_key exists in the rowdata columns
   if (!rowdata_key %in% colnames(rowdata)) {
     stop("The provided rowdata_key is not a column in the rowdata.")
