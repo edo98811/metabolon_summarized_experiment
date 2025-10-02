@@ -8,7 +8,8 @@ cdt_to_se(
   cdt,
   output_file = NULL,
   save_file = T,
-  data_type = "batch_norm_imputed"
+  data_type = "batch_norm_imputed",
+  rowdata_key = "INCHIKEY"
 )
 }
 \arguments{
