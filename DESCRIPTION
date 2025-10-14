@@ -3,7 +3,6 @@ Title: Metabolon Interface
 Version: 0.2.0
 Authors@R: 
     person("Edoardo", "Filippi", , "edoardo.filippi@uni-mainz.de.com", role = c("aut", "cre"))
-    person("Federico", "Marini", , "federico.marini@uni-mainz.de.com", role = c("aut", "cre"))
 Description: Interface to work with metabolon standard data formates
 License: use_mit_license()
 Encoding: UTF-8
@@ -14,5 +13,11 @@ Imports:
     org.Hs.eg.db,
     org.Mm.eg.db
 Suggests: 
-    testthat (>= 3.0.0)
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    macrophage,
+    limma,
+    edgeR
 Config/testthat/edition: 3
+VignetteBuilder: knitr

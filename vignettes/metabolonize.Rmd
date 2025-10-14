@@ -1,0 +1,150 @@
+---
+title: "Metabolonize"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{metabolonize}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+```{r setup}
+library("metabolonize")
+```
+
+```{r setup}
+suppressPackageStartupMessages({
+  library("macrophage")
+  library("SummarizedExperiment")
+  library("limma")
+  library("edgeR")
+})
+```
+
+
+```{r download-dataset}
+cdt_path <- system.file("extdata", "example_data_tables.xlsx", package = "metabolonize")
+
+data(gse)
+rownames(gse) <- substr(rownames(gse), 1, 15) # per togliere tutto quello dopo il punto
+```
+
+The requirement for this package to work is that the CLIENT_SAMPLE_ID is the same as the colnames of the summarized experiment.
+
+```{r DESeq-setup}
+dds <- DESeqDataSet(gse, design = ~condition)
+
+keep <- rowSums(counts(dds) >= 10) >= 6
+dds <- dds[keep, ]
+
+dds <- DESeq(dds)
+```
+
+
+```{r limma-setup}
+condition <- factor(colData(gse)[, "condition_name"])
+
+design <- model.matrix(~ 0 + condition)
+contrast.matrix <- makeContrasts(
+  IFNg_vs_naive = conditionIFNg - conditionnaive,
+  levels = design
+)
+
+d0 <- DGEList(assay(gse))
+d0 <- calcNormFactors(d0)
+
+cutoff <- 1
+drop <- which(apply(cpm(d0), 1, max) < cutoff)
+d <- d0[-drop, ]
+
+matrix_to_fit_model_to <- voom(d, design, plot = F)
+# matrix_to_fit_model_to <- assay(se) # Use the assay data from the SummarizedExperiment object
+
+fit <- lmFit(matrix_to_fit_model_to, design) # Fit the linear model
+fit2 <- contrasts.fit(fit, contrast.matrix)
+
+# View(as.data.frame(colData(se)))
+fit2 <- eBayes(fit2) # Empirical Bayes moderation
+```
+
+```{r de-DESeq}
+res_macrophage_IFNg_vs_naive_dds <- results(dds,
+  contrast = c("condition", "IFNg", "naive"),
+  lfcThreshold = 1, alpha = 0.05
+)
+summary(res_macrophage_IFNg_vs_naive_dds)
+```
+
+```{r de-limma}
+res_macrophage_IFNg_vs_naive_limma <- topTable(fit2, coef = "IFNg_vs_naive", adjust = "fdr", number = Inf, confint = TRUE)
+```
+
+
+# Package usage
+
+```{r dds-to-metabolon}
+se_to_metabolon(gse,
+  cdt = cdt_path,
+  input_features = "ensembl_id",
+  output_file = "test/se_to_metabolon_dds.csv",
+  organism = "Hs",
+  save_file = T
+)
+
+table <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
+  format = "DESeqResults",
+  omics = "transcriptomics",
+  custom_colnames = NULL,
+  output_file = "test/res_to_metabolon_dds.csv",
+  input_features = "ensembl_id",
+  organism = "Hs",
+  save_file = T
+)
+```
+
+
+```{r limma-to-metabolon}
+table1 <- se_to_metabolon(gse,
+  cdt = cdt_path,
+  input_features = "ensembl_id",
+  output_file = "test/se_to_metabolon_limma.csv",
+  organism = "Hs",
+  save_file = T
+)
+
+table2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
+  format = "topTable",
+  omics = "transcriptomics",
+  custom_colnames = NULL,
+  output_file = "test/res_to_metabolon_limma.csv",
+  input_features = "ensembl_id",
+  organism = "Hs",
+  save_file = T
+)
+```
+
+
+```{r metabolon-to-se}
+se <- cdt_to_se(
+  cdt = cdt_path,
+  output_file = "test/cdt_to_se_bni.rds",
+  save_file = T,
+  data_type = "batch_norm_imputed"
+)
+se
+```
+
+```{r add-pca}
+library(SingleCellExperiment)
+
+ace < -as(se, "SingleCellExperiment")
+
+# As you can see here we can add dimensionality reductions (as many as we need) to the object using the capabilities of a single cell summarized experiment
+pca_result <- prcomp(t(assay(se)))
+
+reducedDim(sce, "PCA") <- pca_result$x
+```

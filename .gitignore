@@ -9,3 +9,4 @@ old/
 .Ruserdata
 .vscode/
 .vscode/*
+inst/doc
