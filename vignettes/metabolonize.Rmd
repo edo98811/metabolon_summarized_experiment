@@ -6,6 +6,8 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+# setup
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -141,7 +143,7 @@ se
 ```{r add-pca}
 library(SingleCellExperiment)
 
-ace < -as(se, "SingleCellExperiment")
+ace <- as(se, "SingleCellExperiment")
 
 # As you can see here we can add dimensionality reductions (as many as we need) to the object using the capabilities of a single cell summarized experiment
 pca_result <- prcomp(t(assay(se)))
