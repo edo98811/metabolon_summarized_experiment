@@ -1,5 +1,5 @@
 ---
-title: "Metabolonize"
+title: "metabolonize"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{metabolonize}
@@ -8,28 +8,29 @@ vignette: >
 ---
 # setup
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
-```{r setup}
+```{r package}
 library("metabolonize")
 ```
 
-```{r setup}
+```{r packages}
 suppressPackageStartupMessages({
   library("macrophage")
   library("SummarizedExperiment")
   library("limma")
   library("edgeR")
+  library("DESeq2")
 })
 ```
 
 
 ```{r download-dataset}
-cdt_path <- system.file("extdata", "example_data_tables.xlsx", package = "metabolonize")
+cdt_path <- system.file("extdata", "example_data_tables.XLSX", package = "metabolonize")
 
 data(gse)
 rownames(gse) <- substr(rownames(gse), 1, 15) # per togliere tutto quello dopo il punto
@@ -143,7 +144,7 @@ se
 ```{r add-pca}
 library(SingleCellExperiment)
 
-ace <- as(se, "SingleCellExperiment")
+sce <- as(se, "SingleCellExperiment")
 
 # As you can see here we can add dimensionality reductions (as many as we need) to the object using the capabilities of a single cell summarized experiment
 pca_result <- prcomp(t(assay(se)))

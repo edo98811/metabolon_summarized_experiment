@@ -10,3 +10,6 @@ old/
 .vscode/
 .vscode/*
 inst/doc
+
+docs/
+vignettes/test/

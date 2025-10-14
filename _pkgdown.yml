@@ -1,0 +1,4 @@
+usethis::use_pkgdown_github_pages()url: ~
+template:
+  bootstrap: 5
+
