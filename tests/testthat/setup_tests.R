@@ -75,8 +75,6 @@ summary(res_macrophage_IFNg_vs_naive_dds)
 res_macrophage_IFNg_vs_naive_dds$SYMBOL <- rowData(dds)$SYMBOL
 
 
-
-
 # res_de_limma -------------------------------------------------
 res_macrophage_IFNg_vs_naive_limma <- topTable(fit2, coef = "IFNg_vs_naive", adjust = "fdr", number = Inf, confint = TRUE)
 

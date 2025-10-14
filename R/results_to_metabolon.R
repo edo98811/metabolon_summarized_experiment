@@ -1,6 +1,6 @@
 #' @title Convert Results to Metabolon Format
 #' @description This function converts differential expression analysis results 
-#' (from limma, DESeq2, or custom formats) into a format compatible with Metabolon.
+#' (from limma, DESeq2, or custom formats) into a format compatible with Metabolon multi-omics module.
 #' @param table A data frame containing the results of differential expression analysis.
 #' @param format A character string specifying the format of the input table. 
 #' Options are "topTable" (limma), "DESeqResults" (DESeq2), "edgeR" (not yet supported), 
@@ -13,7 +13,7 @@
 #' @param input_features A character string specifying the type of input features. 
 #' Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id".
 #' @param organism A character string specifying the organism. Can be "Mm" or "Hs". Default is "Hs" (Homo sapiens).
-#' @param save_file A logical value indicating whether to save the output to a file. Default is TRUE. If `FALSE`, the object will be returned. If a path is not provided,
+#' @param save_file A logical value indicating whether to save the output to a file. Default is TRUE. If a path is not provided,
 #'   a default filename will be generated based on the current date and saved in the working directory.
 #' @return A data frame formatted for Metabolon, with columns: Feature, Omics, p-value, FDR, and FC.
 #' @details The function checks the correctness of the input format and ensures that the required 
@@ -46,10 +46,9 @@ results_to_metabolon <- function(table,
                                 organism = "Hs",
                                 save_file = T) {
   
-  # Check correctness of input
-  if (!format %in% c("topTable", "DESeqResults", "edgeR", "Custom")) {
-    stop("Invalid format. Choose from 'topTable', 'DESeqResults', 'Custom' or 'edgeR'.")
-  }
+  # Check format argument
+  format <- match.arg(format, c("topTable", "DESeqResults", "Custom"))
+
   # Check if organism is valid
   if (!organism %in% c("Mm", "Hs")) {
     stop("Invalid organism. Choose either 'Mm' (Mus musculus) or 'Hs' (Homo sapiens).")
@@ -69,5 +68,6 @@ results_to_metabolon <- function(table,
     message("Saving results to: ", output_file)
     dir.create(dirname(output_file), showWarnings = FALSE)
     write.table(results_for_metabolon, output_file, sep = ",", row.names = FALSE)
-  } else return(results_for_metabolon)
+  } 
+  return(results_for_metabolon)
 }

@@ -1,6 +1,6 @@
 #' Convert CDT File to SummarizedExperiment Object
 #'
-#' This function reads a CDT (Comprehensive Data Table) Excel file and converts it into a
+#' This function reads a CDT (Client Data Table) Excel file and converts it into a
 #' `SummarizedExperiment` object. The function allows selecting specific data types and
 #' optionally saves the resulting object to a file.
 #'
@@ -18,7 +18,8 @@
 #'     \item `"mass_extracted"`: Extracts mass extracted data (sheet 7).
 #'     \item `"log_transformed"`: Extracts log-transformed data (sheet 8).
 #'   }
-#'   Default is `"mbtch_norm_imputed"`.
+#'   Default is `"batch_norm_imputed"`.
+#' @param rowdata_key Character. The column name in the row data (sheet 2) to use as row names.
 #'
 #' @return A `SummarizedExperiment` object containing:
 #'   \itemize{
@@ -30,10 +31,11 @@
 #' @details
 #' The function performs the following steps:
 #' \enumerate{
-#'   \item Validates the existence of the provided `cdt`.
+#'   \item Validates the existence of the provided CDT.
 #'   \item Reads metadata (sheet 3) and row data (sheet 2) from the CDT file.
 #'   \item Extracts assay data based on the specified `data_type`.
-#'   \item Ensures consistency between metadata and assay data dimensions.
+#'   \item Cleans and formats the metadata and row data. The componds kept all the ones that have a non-NA value in the selected row data (annotation) column.
+#'   \item Ensures consistency between metadata and assay data dimensions. 
 #'   \item Constructs a `SummarizedExperiment` object.
 #'   \item Optionally saves the resulting object to a file if `save_file` is `TRUE`.
 #' }
@@ -96,6 +98,11 @@ cdt_to_se <- function(cdt,
   return(se)
 }
 
+#' Clean and format the row data from the CDT file
+#'  
+#' @param rowdata A data frame containing the row data from the CDT file.
+#' @param rowdata_key A character string specifying the column name to use as row names.
+#' @return A cleaned and formatted row data data frame.
 make_rowdata <- function(rowdata, rowdata_key) {
 
   # Check if the specified rowdata_key exists in the rowdata columns
@@ -107,15 +114,16 @@ make_rowdata <- function(rowdata, rowdata_key) {
   rowdata <- rowdata[!rowSums(is.na(rowdata)) == ncol(rowdata), ]
 
   # Check for missing values in the rowdata_key column and delete those rows
-  if (any(is.na(rowdata[[rowdata_key]]))) {
+  na_keys <- is.na(rowdata[[rowdata_key]])
+  if (any(na_keys)) {
     warning(
       "Missing values found in the rowdata_key column. The following entities will be removed: ",
       paste(rowdata[is.na(rowdata[[rowdata_key]]), ]$CHEM_ID, collapse = ", ")
     )
-    rowdata <- rowdata[!is.na(rowdata[[rowdata_key]]), ]
+    rowdata <- rowdata[!na_keys, ]
   }
 
-  # Check for duplicated values in the rowdata_key column
+  # Check for duplicated values in the rowdata_key column. Kept only the first occurrence. This is to ensure that the rownames are unique
   duplicated_rows <- rowdata[duplicated(rowdata[[rowdata_key]]), ]
   if (nrow(duplicated_rows) > 0) {
     warning(sprintf(
@@ -123,7 +131,7 @@ make_rowdata <- function(rowdata, rowdata_key) {
       rowdata_key,
       paste(duplicated_rows[[rowdata_key]], collapse = ", ")
     ))
-    rowdata <- rowdata[!duplicated(rowdata[[rowdata_key]]), ]
+    rowdata <- rowdata[!duplicated_rows, ]
   }
 
   # Set the row names of the rowdata to the values in the INCHIKEY column
@@ -132,7 +140,12 @@ make_rowdata <- function(rowdata, rowdata_key) {
   return(rowdata)
 }
 
+#' Clean and format the metadata from the CDT file
+#'  
+#' @param metadata A data frame containing the metadata from the CDT file.
+#' @return A cleaned and formatted metadata data frame.
 make_metadata <- function(metadata) {
+
   metadata <- metadata[!rowSums(is.na(metadata)) == ncol(metadata), ]
   rownames(metadata) <- metadata$PARENT_SAMPLE_NAME
 
@@ -144,6 +157,12 @@ make_metadata <- function(metadata) {
   return(metadata)
 }
 
+#' Load assay data based on the specified data type
+#' 
+#' @param cdt Character. Path to the CDT Excel file.
+#' @param data_type Character. The type of data to extract. Options are:
+#'   "peak_area", "batch_norm", "batch_norm_imputed", "mass_extracted", "log_transformed".
+#' @return A data frame containing the assay data.
 load_assay_data <- function(cdt, data_type) {
   
   assay_data <- switch(data_type,

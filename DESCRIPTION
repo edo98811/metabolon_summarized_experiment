@@ -12,7 +12,7 @@ RoxygenNote: 7.3.2
 Imports:
     SummarizedExperiment,
     org.Hs.eg.db,
-    org.Mm.eg.db,
-    ggforce,
-    ggplot2,
-    ggrepel
+    org.Mm.eg.db
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
