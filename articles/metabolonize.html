@@ -216,7 +216,30 @@ is the same as the colnames of the summarized experiment.</p>
 <span>  input_features <span class="op">=</span> <span class="st">"ensembl_id"</span>,</span>
 <span>  organism <span class="op">=</span> <span class="st">"Hs"</span>,</span>
 <span>  save_file <span class="op">=</span> <span class="cn">F</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">table1</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                ENSG00000000003 ENSG00000000005 ENSG00000000419 ENSG00000000457</span></span>
+<span><span class="co">#&gt; SAMEA103885102          83.818               0        1462.001         616.732</span></span>
+<span><span class="co">#&gt; SAMEA103885347         144.156               0        1380.000        1058.364</span></span>
+<span><span class="co">#&gt; SAMEA103885043          71.239               0        1117.000         436.315</span></span>
+<span><span class="co">#&gt; SAMEA103885392         130.372               0         961.000         703.578</span></span>
+<span><span class="co">#&gt; SAMEA103885182         241.527               0        1399.000         580.188</span></span>
+<span><span class="co">#&gt; SAMEA103885136         140.124               0        1276.000        1036.716</span></span>
+<span><span class="co">#&gt;                ENSG00000000460 ENSG00000000938 ENSG00000000971 ENSG00000001036</span></span>
+<span><span class="co">#&gt; SAMEA103885102         913.913         210.999         508.000        7715.294</span></span>
+<span><span class="co">#&gt; SAMEA103885347         330.360         273.001        8355.997        6376.500</span></span>
+<span><span class="co">#&gt; SAMEA103885043         292.047         635.000         657.999        6231.000</span></span>
+<span><span class="co">#&gt; SAMEA103885392         119.337        1210.000        6407.001        5307.074</span></span>
+<span><span class="co">#&gt; SAMEA103885182         492.361         528.000         140.999        5099.999</span></span>
+<span><span class="co">#&gt; SAMEA103885136         173.410         669.000        6670.997        4314.000</span></span>
+<span><span class="co">#&gt;                ENSG00000001084 ENSG00000001167</span></span>
+<span><span class="co">#&gt; SAMEA103885102        6363.152            1605</span></span>
+<span><span class="co">#&gt; SAMEA103885347       15601.710            1614</span></span>
+<span><span class="co">#&gt; SAMEA103885043        2356.371            1603</span></span>
+<span><span class="co">#&gt; SAMEA103885392        8890.247            1628</span></span>
+<span><span class="co">#&gt; SAMEA103885182        5275.775            1765</span></span>
+<span><span class="co">#&gt; SAMEA103885136       14894.069            1400</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cdt_to_se.html">cdt_to_se</a></span><span class="op">(</span></span>
 <span>  cdt <span class="op">=</span> <span class="va">cdt_path</span>,</span>
