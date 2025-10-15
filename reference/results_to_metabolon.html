@@ -110,15 +110,14 @@ columns are present in the input table. It supports workflows for "topTable" (li
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example usage with limma::topTable results</span></span></span>
 <span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html" class="external-link">topTable</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fit' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in limma::topTable(fit):</span> Need to run eBayes or treat first</span>
 <span class="r-in"><span><span class="va">metabolon_results</span> <span class="op">&lt;-</span> <span class="fu">results_to_metabolon</span><span class="op">(</span><span class="va">results</span>, format <span class="op">=</span> <span class="st">"topTable"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'results' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in check_table(table, format):</span> Input 'table' must inherit from class 'data.frame' (or output of limma::topTable).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example usage with DESeq2::results</span></span></span>
 <span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">DESeq2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/results.html" class="external-link">results</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'dds' not found</span>
 <span class="r-in"><span><span class="va">metabolon_results</span> <span class="op">&lt;-</span> <span class="fu">results_to_metabolon</span><span class="op">(</span><span class="va">results</span>, format <span class="op">=</span> <span class="st">"DESeqResults"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'results' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Saving results to: results_to_metabolon_2025-10-15.csv</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example usage with custom format</span></span></span>
 <span class="r-in"><span><span class="va">custom_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
