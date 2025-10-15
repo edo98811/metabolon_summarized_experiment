@@ -10,7 +10,8 @@ se_to_metabolon(
   input_features = "ensembl_id",
   output_file = NULL,
   organism = "Hs",
-  save_file = T
+  save_file = T,
+  sample_id_column = "CLIENT_SAMPLE_ID"
 )
 }
 \arguments{
@@ -35,8 +36,7 @@ A transposed assay matrix with row names and column names formatted according to
 }
 \description{
 This function converts a \code{SummarizedExperiment} object into a format compatible
-with Metabolon data analysis. It allows for customization of input features
-and provides options to save the output to a file.
+with Metabolon data analysis.
 }
 \details{
 \itemize{

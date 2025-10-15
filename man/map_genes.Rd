@@ -4,8 +4,7 @@
 \alias{map_genes}
 \title{Map Gene Identifiers to Ensembl IDs
 
-This function maps gene identifiers (gene symbols or UniProt IDs) to Ensembl Gene IDs using the appropriate organism database.
-It supports both human (Hs) and mouse (Mm) organisms.}
+This function maps gene identifiers (gene symbols or UniProt IDs) to Ensembl Gene IDs using the appropriate organism database.}
 \usage{
 map_genes(keys_list, matrix, input_features, organism)
 }
@@ -26,5 +25,4 @@ matrix with row names updated to Ensembl IDs, suitable for downstream analysis.
 Map Gene Identifiers to Ensembl IDs
 
 This function maps gene identifiers (gene symbols or UniProt IDs) to Ensembl Gene IDs using the appropriate organism database.
-It supports both human (Hs) and mouse (Mm) organisms.
 }

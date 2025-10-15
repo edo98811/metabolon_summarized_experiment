@@ -1,7 +1,6 @@
 #' Map Gene Identifiers to Ensembl IDs
 #'  
 #' This function maps gene identifiers (gene symbols or UniProt IDs) to Ensembl Gene IDs using the appropriate organism database.
-#' It supports both human (Hs) and mouse (Mm) organisms. 
 #' @param keys_list A character vector of gene identifiers (gene symbols, UniProt IDs, or Ensembl IDs).
 #' @param matrix A data frame or matrix containing the assay data, with row names corresponding to the identifiers in `keys_list`.
 #' @param input_features A character string specifying the type of input features. Options are `"gene_symbol"`, `"uniprot_id"`,

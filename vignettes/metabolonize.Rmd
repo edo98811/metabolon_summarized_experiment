@@ -14,6 +14,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
 ```{r package}
 library("metabolonize")
 ```
@@ -52,8 +53,10 @@ dds <- DESeq(dds)
 condition <- factor(colData(gse)[, "condition_name"])
 
 design <- model.matrix(~ 0 + condition)
+colnames(design) <- levels(condition)
+
 contrast.matrix <- makeContrasts(
-  IFNg_vs_naive = conditionIFNg - conditionnaive,
+  IFNg_vs_naive = IFNg - naive,
   levels = design
 )
 
@@ -67,11 +70,11 @@ d <- d0[-drop, ]
 matrix_to_fit_model_to <- voom(d, design, plot = F)
 # matrix_to_fit_model_to <- assay(se) # Use the assay data from the SummarizedExperiment object
 
-fit <- lmFit(matrix_to_fit_model_to, design) # Fit the linear model
+fit <- lmFit(matrix_to_fit_model_to, design) #
 fit2 <- contrasts.fit(fit, contrast.matrix)
 
 # View(as.data.frame(colData(se)))
-fit2 <- eBayes(fit2) # Empirical Bayes moderation
+fit2 <- eBayes(fit2) 
 ```
 
 ```{r de-DESeq}
@@ -90,44 +93,44 @@ res_macrophage_IFNg_vs_naive_limma <- topTable(fit2, coef = "IFNg_vs_naive", adj
 # Package usage
 
 ```{r dds-to-metabolon}
-se_to_metabolon(gse,
+table1 <- se_to_metabolon(gse,
   cdt = cdt_path,
   input_features = "ensembl_id",
   output_file = "test/se_to_metabolon_dds.csv",
   organism = "Hs",
-  save_file = T
+  save_file = F,
+  sample_id_column = "CLIENT_SAMPLE_ID"
 )
 
-table <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
+print(head(table1[,c(1:10)]))
+
+res_1 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
   format = "DESeqResults",
   omics = "transcriptomics",
   custom_colnames = NULL,
   output_file = "test/res_to_metabolon_dds.csv",
   input_features = "ensembl_id",
   organism = "Hs",
-  save_file = T
+  save_file = F
 )
+
+print(head(table1[,c(1:10)]))
 ```
 
 
 ```{r limma-to-metabolon}
-table1 <- se_to_metabolon(gse,
-  cdt = cdt_path,
-  input_features = "ensembl_id",
-  output_file = "test/se_to_metabolon_limma.csv",
-  organism = "Hs",
-  save_file = T
-)
-
-table2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
+res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
   format = "topTable",
   omics = "transcriptomics",
   custom_colnames = NULL,
   output_file = "test/res_to_metabolon_limma.csv",
   input_features = "ensembl_id",
   organism = "Hs",
-  save_file = T
+  save_file = F
 )
+
+print(head(table1[,c(1:10)]))
+
 ```
 
 
@@ -135,7 +138,7 @@ table2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
 se <- cdt_to_se(
   cdt = cdt_path,
   output_file = "test/cdt_to_se_bni.rds",
-  save_file = T,
+  save_file = F,
   data_type = "batch_norm_imputed"
 )
 se
