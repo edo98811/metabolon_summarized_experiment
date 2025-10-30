@@ -1,18 +1,18 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>/404.html</loc></url>
-<url><loc>/LICENSE-text.html</loc></url>
-<url><loc>/articles/index.html</loc></url>
-<url><loc>/articles/metabolonize.html</loc></url>
-<url><loc>/authors.html</loc></url>
-<url><loc>/index.html</loc></url>
-<url><loc>/reference/cdt_to_se.html</loc></url>
-<url><loc>/reference/index.html</loc></url>
-<url><loc>/reference/load_assay_data.html</loc></url>
-<url><loc>/reference/make_metadata.html</loc></url>
-<url><loc>/reference/make_results_for_metabolon.html</loc></url>
-<url><loc>/reference/make_rowdata.html</loc></url>
-<url><loc>/reference/map_genes.html</loc></url>
-<url><loc>/reference/results_to_metabolon.html</loc></url>
-<url><loc>/reference/se_to_metabolon.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/404.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/LICENSE-text.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/articles/index.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/articles/metabolonize.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/authors.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/index.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/cdt_to_se.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/index.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/load_assay_data.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/make_metadata.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/make_results_for_metabolon.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/make_rowdata.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/map_genes.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/results_to_metabolon.html</loc></url>
+<url><loc>https://edo98811.github.io/metabolon_summarized_experiment/reference/se_to_metabolon.html</loc></url>
 </urlset>
 
