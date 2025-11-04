@@ -1,0 +1,33 @@
+name: Deploy pkgdown site to gh-pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install dependencies
+        run: |
+          install.packages("pkgdown")
+          install.packages("devtools")
+          devtools::install(dependencies = TRUE, install = TRUE)
+
+      - name: Build site
+        run: Rscript -e 'pkgdown::build_site()'
+
+      # Deploy to gh-pages branch
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./
+            publish_branch: gh-pages
+            force_orphan: true
