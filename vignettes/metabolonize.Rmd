@@ -91,6 +91,9 @@ res_macrophage_IFNg_vs_naive_limma <- topTable(fit2, coef = "IFNg_vs_naive", adj
 
 
 # Package usage
+You can call these two functions to convert your data to a format that can be uploaded to the Metabolon platform in the multiomics section. It automatically formats the results from DESeq2 or limma to the required format.
+
+In addition to this you can also convert the assay data of a summarized experiment object to the format requested by Metabolon using the function `se_to_metabolon`.
 
 ```{r dds-to-metabolon}
 table1 <- se_to_metabolon(gse,
@@ -117,6 +120,7 @@ res_1 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
 print(head(table1[,c(1:10)]))
 ```
 
+The package works also with limma results using topTable format:
 
 ```{r limma-to-metabolon}
 res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
@@ -133,6 +137,8 @@ print(head(table1[,c(1:10)]))
 
 ```
 
+# Converting Metabolon data to SummarizedExperiment
+You can also convert a Metabolon Client data table file to a SummarizedExperiment object using the function `cdt_to_se`, to be able to easily import the data in R and continue with your analysis.
 
 ```{r metabolon-to-se}
 se <- cdt_to_se(
