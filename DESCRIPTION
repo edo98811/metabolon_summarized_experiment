@@ -25,5 +25,5 @@ Suggests:
     DESeq2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://github.com/edo98811/metabolon_summarized_experiment
+URL: https://github.com/edo98811/metabolon_summarized_experiment, https://edo98811.github.io/metabolon_summarized_experiment
 BugReports: https://github.com/edo98811/metabolon_summarized_experiment/issues
