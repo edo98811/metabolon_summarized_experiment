@@ -99,7 +99,6 @@ In addition to this you can also convert the assay data of a summarized experime
 table1 <- se_to_metabolon(gse,
   cdt = cdt_path,
   input_features = "ensembl_id",
-  output_file = "test/se_to_metabolon_dds.csv",
   organism = "Hs",
   save_file = F,
   sample_id_column = "CLIENT_SAMPLE_ID"
@@ -111,7 +110,6 @@ res_1 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
   format = "DESeqResults",
   omics = "transcriptomics",
   custom_colnames = NULL,
-  output_file = "test/res_to_metabolon_dds.csv",
   input_features = "ensembl_id",
   organism = "Hs",
   save_file = F
@@ -127,7 +125,6 @@ res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
   format = "topTable",
   omics = "transcriptomics",
   custom_colnames = NULL,
-  output_file = "test/res_to_metabolon_limma.csv",
   input_features = "ensembl_id",
   organism = "Hs",
   save_file = F
