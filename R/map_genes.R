@@ -7,6 +7,7 @@
 #'   or `"ensembl_id"`.   
 #' @param organism A character string specifying the organism. Can be `"Mm"` (Mus musculus) or `"Hs"` (Homo sapiens). Default is `"Hs"`.
 #' @return matrix with row names updated to Ensembl IDs, suitable for downstream analysis.
+#' @importFrom AnnotationDbi mapIds
 map_genes <- function(keys_list, matrix, input_features, organism) {
 
   # Choose the correct OrgDb object using if/else (not ifelse)

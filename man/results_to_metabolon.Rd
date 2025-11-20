@@ -52,6 +52,7 @@ columns are present in the input table. It supports workflows for "topTable" (li
 }
 \examples{
 # Example usage with limma::topTable results
+\dontrun{
 results <- limma::topTable(fit)
 metabolon_results <- results_to_metabolon(results, format = "topTable")
 
@@ -67,4 +68,5 @@ custom_results <- data.frame(
 )
 metabolon_results <- results_to_metabolon(custom_results, format = "Custom", 
                                           custom_colnames = c("p_value", "FDR", "FC"))
+}
 }

@@ -1,7 +1,7 @@
 #' Convert SummarizedExperiment to Metabolon Format
 #'
 #' This function converts a `SummarizedExperiment` object into a format compatible
-#' with Metabolon data analysis. 
+#' with Metabolon data analysis.
 #'
 #' @param se A `SummarizedExperiment` (or derived) object. The input data to be converted.
 #' @param cdt The client data table from metabolon.
@@ -13,6 +13,7 @@
 #'   (Homo sapiens), Options are: "Mm".
 #' @param save_file A logical value indicating whether to save the output to a file.
 #'   Default is `TRUE`.
+#' @param sample_id_column The column in the metadata that needs to be matched to the sample id in the gse.
 #'
 #' @return A transposed assay matrix with row names and column names formatted according to the standard required by metabolon.
 #'
@@ -29,13 +30,15 @@
 #' result <- se_to_metabolon(se, cdt = "cdt.xlsx", input_features = "gene_symbol", save_file = TRUE)
 #' }
 #'
+#' @importFrom readxl read_excel
+#' @importFrom utils write.table
 #' @export
 se_to_metabolon <- function(se,
                             cdt,
                             input_features = "ensembl_id",
                             output_file = NULL,
                             organism = "Hs",
-                            save_file = T,
+                            save_file = TRUE,
                             sample_id_column = "CLIENT_SAMPLE_ID") {
   # Check correctness of input
   if (!inherits(se, "SummarizedExperiment")) stop("The input object is not a SummarizedExperiment.")
@@ -44,8 +47,9 @@ se_to_metabolon <- function(se,
   if (!organism %in% c("Mm", "Hs")) {
     stop("Invalid organism. Choose either 'Mm' (Mus musculus) or 'Hs' (Homo sapiens).")
   }
+
   # Read metadata
-  metadata <- openxlsx2::read_xlsx(cdt, sheet = 3, rowNames = TRUE)
+  metadata <- make_metadata(readxl::read_excel(cdt, sheet = 3))
 
   # Get transposed matrix
   assay <- as.data.frame(assay(se))

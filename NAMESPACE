@@ -3,5 +3,7 @@
 export(cdt_to_se)
 export(results_to_metabolon)
 export(se_to_metabolon)
+importFrom(AnnotationDbi,mapIds)
 importFrom(SummarizedExperiment,SummarizedExperiment)
-importFrom(openxlsx2,wb_to_df)
+importFrom(readxl,read_excel)
+importFrom(utils,write.table)

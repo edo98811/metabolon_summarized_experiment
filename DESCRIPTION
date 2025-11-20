@@ -14,7 +14,8 @@ Imports:
     SummarizedExperiment,
     org.Hs.eg.db,
     org.Mm.eg.db,
-    openxlsx2
+    AnnotationDbi,
+    readxl
 Suggests: 
     knitr,
     rmarkdown,
@@ -22,6 +23,7 @@ Suggests:
     macrophage,
     limma,
     edgeR,
+    SingleCellExperiment,
     DESeq2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
