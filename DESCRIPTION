@@ -3,16 +3,29 @@ Title: Metabolon Interface
 Version: 0.2.0
 Authors@R: 
     person("Edoardo", "Filippi", , "edoardo.filippi@uni-mainz.de.com", role = c("aut", "cre"))
-    person("Federico", "Marini", , "federico.marini@uni-mainz.de.com", role = c("aut", "cre"))
 Description: Interface to work with metabolon standard data formates
-License: use_mit_license()
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.0.0)
 Imports:
     SummarizedExperiment,
     org.Hs.eg.db,
-    org.Mm.eg.db
+    org.Mm.eg.db,
+    AnnotationDbi,
+    readxl
 Suggests: 
-    testthat (>= 3.0.0)
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    macrophage,
+    limma,
+    edgeR,
+    SingleCellExperiment,
+    DESeq2
 Config/testthat/edition: 3
+VignetteBuilder: knitr
+URL: https://github.com/edo98811/metabolon_summarized_experiment, https://edo98811.github.io/metabolon_summarized_experiment
+BugReports: https://github.com/edo98811/metabolon_summarized_experiment/issues

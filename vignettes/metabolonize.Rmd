@@ -1,0 +1,159 @@
+---
+title: "metabolonize"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{metabolonize}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# setup
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r package}
+library("metabolonize")
+```
+
+```{r packages}
+suppressPackageStartupMessages({
+  library("macrophage")
+  library("SummarizedExperiment")
+  library("limma")
+  library("edgeR")
+  library("DESeq2")
+})
+```
+
+
+```{r download-dataset}
+cdt_path <- system.file("extdata", "example_data_tables.XLSX", package = "metabolonize")
+
+data(gse)
+rownames(gse) <- substr(rownames(gse), 1, 15) # per togliere tutto quello dopo il punto
+```
+
+The requirement for this package to work is that the CLIENT_SAMPLE_ID is the same as the colnames of the summarized experiment.
+
+```{r DESeq-setup}
+dds <- DESeqDataSet(gse, design = ~condition)
+
+keep <- rowSums(counts(dds) >= 10) >= 6
+dds <- dds[keep, ]
+
+dds <- DESeq(dds)
+```
+
+
+```{r limma-setup}
+condition <- factor(colData(gse)[, "condition_name"])
+
+design <- model.matrix(~ 0 + condition)
+colnames(design) <- levels(condition)
+
+contrast.matrix <- makeContrasts(
+  IFNg_vs_naive = IFNg - naive,
+  levels = design
+)
+
+d0 <- DGEList(assay(gse))
+d0 <- calcNormFactors(d0)
+
+cutoff <- 1
+drop <- which(apply(cpm(d0), 1, max) < cutoff)
+d <- d0[-drop, ]
+
+matrix_to_fit_model_to <- voom(d, design, plot = F)
+# matrix_to_fit_model_to <- assay(se) # Use the assay data from the SummarizedExperiment object
+
+fit <- lmFit(matrix_to_fit_model_to, design) #
+fit2 <- contrasts.fit(fit, contrast.matrix)
+
+# View(as.data.frame(colData(se)))
+fit2 <- eBayes(fit2) 
+```
+
+```{r de-DESeq}
+res_macrophage_IFNg_vs_naive_dds <- results(dds,
+  contrast = c("condition", "IFNg", "naive"),
+  lfcThreshold = 1, alpha = 0.05
+)
+summary(res_macrophage_IFNg_vs_naive_dds)
+```
+
+```{r de-limma}
+res_macrophage_IFNg_vs_naive_limma <- topTable(fit2, coef = "IFNg_vs_naive", adjust = "fdr", number = Inf, confint = TRUE)
+```
+
+
+# Package usage
+You can call these two functions to convert your data to a format that can be uploaded to the Metabolon platform in the multiomics section. It automatically formats the results from DESeq2 or limma to the required format.
+
+In addition to this you can also convert the assay data of a summarized experiment object to the format requested by Metabolon using the function `se_to_metabolon`.
+
+```{r dds-to-metabolon}
+table1 <- se_to_metabolon(gse,
+  cdt = cdt_path,
+  input_features = "ensembl_id",
+  organism = "Hs",
+  save_file = F,
+  sample_id_column = "CLIENT_SAMPLE_ID"
+)
+
+print(head(table1[,c(1:10)]))
+
+res_1 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
+  format = "DESeqResults",
+  omics = "transcriptomics",
+  custom_colnames = NULL,
+  input_features = "ensembl_id",
+  organism = "Hs",
+  save_file = F
+)
+
+print(head(table1[,c(1:10)]))
+```
+
+The package works also with limma results using topTable format:
+
+```{r limma-to-metabolon}
+res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
+  format = "topTable",
+  omics = "transcriptomics",
+  custom_colnames = NULL,
+  input_features = "ensembl_id",
+  organism = "Hs",
+  save_file = F
+)
+
+print(head(table1[,c(1:10)]))
+
+```
+
+# Converting Metabolon data to SummarizedExperiment
+You can also convert a Metabolon Client data table file to a SummarizedExperiment object using the function `cdt_to_se`, to be able to easily import the data in R and continue with your analysis.
+
+```{r metabolon-to-se}
+se <- cdt_to_se(
+  cdt = cdt_path,
+  output_file = "test/cdt_to_se_bni.rds",
+  save_file = F,
+  data_type = "batch_norm_imputed"
+)
+se
+```
+
+```{r add-pca}
+library(SingleCellExperiment)
+
+sce <- as(se, "SingleCellExperiment")
+
+# As you can see here we can add dimensionality reductions (as many as we need) to the object using the capabilities of a single cell summarized experiment
+pca_result <- prcomp(t(assay(se)))
+
+reducedDim(sce, "PCA") <- pca_result$x
+```
