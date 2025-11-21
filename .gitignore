@@ -6,3 +6,6 @@ extdata/
 .Rhistory
 .RData
 .Ruserdata
+.Rproj.user/
+docs/
+.Rbuildignore
