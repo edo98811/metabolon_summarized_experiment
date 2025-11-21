@@ -35,7 +35,7 @@ Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id
 
 \item{organism}{A character string specifying the organism. Can be "Mm" or "Hs". Default is "Hs" (Homo sapiens).}
 
-\item{save_file}{A logical value indicating whether to save the output to a file. Default is TRUE. If \code{FALSE}, the object will be returned. If a path is not provided,
+\item{save_file}{A logical value indicating whether to save the output to a file. Default is TRUE. If a path is not provided,
 a default filename will be generated based on the current date and saved in the working directory.}
 }
 \value{
@@ -43,7 +43,7 @@ A data frame formatted for Metabolon, with columns: Feature, Omics, p-value, FDR
 }
 \description{
 This function converts differential expression analysis results
-(from limma, DESeq2, or custom formats) into a format compatible with Metabolon.
+(from limma, DESeq2, or custom formats) into a format compatible with Metabolon multi-omics module.
 }
 \details{
 The function checks the correctness of the input format and ensures that the required
@@ -52,6 +52,7 @@ columns are present in the input table. It supports workflows for "topTable" (li
 }
 \examples{
 # Example usage with limma::topTable results
+\dontrun{
 results <- limma::topTable(fit)
 metabolon_results <- results_to_metabolon(results, format = "topTable")
 
@@ -67,4 +68,5 @@ custom_results <- data.frame(
 )
 metabolon_results <- results_to_metabolon(custom_results, format = "Custom", 
                                           custom_colnames = c("p_value", "FDR", "FC"))
+}
 }

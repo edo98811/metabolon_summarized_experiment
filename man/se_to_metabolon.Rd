@@ -10,7 +10,8 @@ se_to_metabolon(
   input_features = "ensembl_id",
   output_file = NULL,
   organism = "Hs",
-  save_file = T
+  save_file = TRUE,
+  sample_id_column = "CLIENT_SAMPLE_ID"
 )
 }
 \arguments{
@@ -27,16 +28,17 @@ If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be g
 \item{organism}{A character string specifying the organism. Default is \code{"Hs"}
 (Homo sapiens), Options are: "Mm".}
 
-\item{save_file}{A logical value indicating whether to save the output to a file.
+\item{save_file}{A logical vawrlue indicating whether to save the output to a file.
 Default is \code{TRUE}.}
+
+\item{sample_id_column}{The column in the metadata that needs to be matched to the sample id in the gse.}
 }
 \value{
 A transposed assay matrix with row names and column names formatted according to the standard required by metabolon.
 }
 \description{
 This function converts a \code{SummarizedExperiment} object into a format compatible
-with Metabolon data analysis. It allows for customization of input features
-and provides options to save the output to a file.
+with Metabolon data analysis.
 }
 \details{
 \itemize{

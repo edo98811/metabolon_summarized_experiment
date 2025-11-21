@@ -21,6 +21,7 @@
 #' "DESeqResults" (DESeq2), and "Custom" formats. The "edgeR" format is not yet supported.
 #' @examples
 #' # Example usage with limma::topTable results
+#' \dontrun{
 #' results <- limma::topTable(fit)
 #' metabolon_results <- results_to_metabolon(results, format = "topTable")
 #' 
@@ -36,6 +37,8 @@
 #' )
 #' metabolon_results <- results_to_metabolon(custom_results, format = "Custom", 
 #'                                           custom_colnames = c("p_value", "FDR", "FC"))
+#' }
+#' @importFrom utils write.table
 #' @export
 results_to_metabolon <- function(table,
                                 format = "topTable",

@@ -1,8 +1,7 @@
 #' Convert SummarizedExperiment to Metabolon Format
 #'
 #' This function converts a `SummarizedExperiment` object into a format compatible
-#' with Metabolon data analysis. It allows for customization of input features
-#' and provides options to save the output to a file.
+#' with Metabolon data analysis.
 #'
 #' @param se A `SummarizedExperiment` (or derived) object. The input data to be converted.
 #' @param cdt The client data table from metabolon.
@@ -14,6 +13,7 @@
 #'   (Homo sapiens), Options are: "Mm".
 #' @param save_file A logical value indicating whether to save the output to a file.
 #'   Default is `TRUE`.
+#' @param sample_id_column The column in the metadata that needs to be matched to the sample id in the gse.
 #'
 #' @return A transposed assay matrix with row names and column names formatted according to the standard required by metabolon.
 #'
@@ -30,13 +30,16 @@
 #' result <- se_to_metabolon(se, cdt = "cdt.xlsx", input_features = "gene_symbol", save_file = TRUE)
 #' }
 #'
+#' @importFrom readxl read_excel
+#' @importFrom utils write.table
 #' @export
 se_to_metabolon <- function(se,
                             cdt,
                             input_features = "ensembl_id",
                             output_file = NULL,
                             organism = "Hs",
-                            save_file = T) {
+                            save_file = TRUE,
+                            sample_id_column = "CLIENT_SAMPLE_ID") {
   # Check correctness of input
   if (!inherits(se, "SummarizedExperiment")) stop("The input object is not a SummarizedExperiment.")
   if (is.null(output_file) && save_file) output_file <- paste0("se_to_metabolon_", Sys.Date(), ".csv")
@@ -46,15 +49,15 @@ se_to_metabolon <- function(se,
   }
 
   # Read metadata
-  metadata <- openxlsx2::read_xlsx(cdt, sheet = 3, rowNames = TRUE)
+  metadata <- make_metadata(readxl::read_excel(cdt, sheet = 3))
 
   # Get transposed matrix
   assay <- as.data.frame(assay(se))
   assay <- map_genes(rownames(se), assay, input_features, organism)
 
-  # Add PARENT_SAMPLE_NAME column
-  assay_transposed <- t(assay)
-  assay_transposed$PARENT_SAMPLE_NAME <- rownames(metadata)[match(colnames(assay), metadata$CLIENT_SAMPLE_ID)]
+  # Add PARENT_SAMPLE_NAME column (from documentation)
+  assay_transposed <- data.frame(t(assay))
+  assay_transposed$PARENT_SAMPLE_NAME <- rownames(metadata)[match(colnames(assay), metadata[[sample_id_column]])]
 
   # Write the output to a file
   if (save_file) {

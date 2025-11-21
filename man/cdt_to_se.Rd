@@ -30,7 +30,9 @@ a default filename will be generated based on the current date and saved in the 
 \item \code{"mass_extracted"}: Extracts mass extracted data (sheet 7).
 \item \code{"log_transformed"}: Extracts log-transformed data (sheet 8).
 }
-Default is \code{"mbtch_norm_imputed"}.}
+Default is \code{"batch_norm_imputed"}.}
+
+\item{rowdata_key}{Character. The column name in the row data (sheet 2) to use as row names.}
 }
 \value{
 A \code{SummarizedExperiment} object containing:
@@ -41,16 +43,17 @@ A \code{SummarizedExperiment} object containing:
 }
 }
 \description{
-This function reads a CDT (Comprehensive Data Table) Excel file and converts it into a
+This function reads a CDT (Client Data Table) Excel file and converts it into a
 \code{SummarizedExperiment} object. The function allows selecting specific data types and
 optionally saves the resulting object to a file.
 }
 \details{
 The function performs the following steps:
 \enumerate{
-\item Validates the existence of the provided \code{cdt}.
+\item Validates the existence of the provided CDT.
 \item Reads metadata (sheet 3) and row data (sheet 2) from the CDT file.
 \item Extracts assay data based on the specified \code{data_type}.
+\item Cleans and formats the metadata and row data. The componds kept all the ones that have a non-NA value in the selected row data (annotation) column.
 \item Ensures consistency between metadata and assay data dimensions.
 \item Constructs a \code{SummarizedExperiment} object.
 \item Optionally saves the resulting object to a file if \code{save_file} is \code{TRUE}.
