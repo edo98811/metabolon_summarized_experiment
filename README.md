@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/edo98811/metabolon_summarized_experiment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/edo98811/helper-functions-rbioinfo/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 # Introduction
 
 This is a package used as interface from standard bioinformatics pipelines to the metabolon software 
