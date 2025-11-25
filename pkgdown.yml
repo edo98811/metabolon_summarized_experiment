@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   metabolonize: metabolonize.html
-last_built: 2025-11-21T10:04Z
+last_built: 2025-11-25T09:22Z
 urls:
   reference: https://edo98811.github.io/metabolon_summarized_experiment/reference
   article: https://edo98811.github.io/metabolon_summarized_experiment/articles
