@@ -10,7 +10,7 @@ results_to_metabolon(
   omics = "Transcriptomics",
   custom_colnames = NULL,
   output_file = NULL,
-  save_file = T
+  save_file = TRUE
 )
 }
 \arguments{

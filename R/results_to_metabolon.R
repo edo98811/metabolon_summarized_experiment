@@ -33,7 +33,7 @@ results_to_metabolon <- function(table,
                                 omics = "Transcriptomics",
                                 custom_colnames = NULL,
                                 output_file = NULL, 
-                                save_file = T) {
+                                save_file = TRUE) {
 
   # Make sure output_file is set if save_file is TRUE
   if (is.null(output_file) && save_file) output_file <- paste0("results_to_metabolon_", Sys.Date(), ".csv")
