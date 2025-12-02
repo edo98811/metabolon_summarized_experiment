@@ -11,7 +11,7 @@
 #'   If `NULL`, default column names will be used.
 #' @param output_file A character string specifying the path to save the output file.
 #'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated. Needs to be csv!
-#'  @param save_file A logical value indicating whether to save the output to a file.
+#' @param save_file A logical value indicating whether to save the output to a file.
 #'   Default is `TRUE`.
 #' @return A data frame formatted according to the standard required by Metabolon.
 #' 

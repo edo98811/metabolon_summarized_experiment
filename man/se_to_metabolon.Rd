@@ -25,8 +25,6 @@ Default is \code{TRUE}.}
 
 \item{sample_id_column}{A character string specifying the column name in the colData
 that contains the sample IDs matching the PARENT_SAMPLE_NAME names. Default is \code{NULL}.}
-
-\item{annotation_db}{An AnnotationDbi OrgDb object (e.g., org.Hs.eg.db::org.Hs.eg.db) for mapping input features to ENSEMBL IDs.}
 }
 \description{
 This function converts a \code{SummarizedExperiment} object into a format compatible

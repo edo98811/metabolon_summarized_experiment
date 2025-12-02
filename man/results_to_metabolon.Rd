@@ -26,8 +26,9 @@ Options are \code{"Transcriptomics"} (default) or \code{"Proteomics"}.}
 If \code{NULL}, default column names will be used.}
 
 \item{output_file}{A character string specifying the path to save the output file.
-If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated. Needs to be csv!
-@param save_file A logical value indicating whether to save the output to a file.
+If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated. Needs to be csv!}
+
+\item{save_file}{A logical value indicating whether to save the output to a file.
 Default is \code{TRUE}.}
 }
 \value{

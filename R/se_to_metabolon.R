@@ -7,7 +7,6 @@
 #' @param cdt A character string specifying the path to the client data table path.
 #' @param output_file A character string specifying the path to save the output file.
 #'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated and it will be saved in the working directory.
-#' @param annotation_db An AnnotationDbi OrgDb object (e.g., org.Hs.eg.db::org.Hs.eg.db) for mapping input features to ENSEMBL IDs.
 #' @param save_file A logical value indicating whether to save the output to a file. Needs to be csv!
 #'   Default is `TRUE`.
 #' @param sample_id_column A character string specifying the column name in the colData
