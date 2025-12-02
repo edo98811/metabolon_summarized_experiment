@@ -1,9 +1,9 @@
-Package: metabolonize
+Package: metabolonIO
 Title: Metabolon Interface
 Version: 0.2.0
 Authors@R: 
     person("Edoardo", "Filippi", , "edoardo.filippi@uni-mainz.de.com", role = c("aut", "cre"))
-Description: Interface to work with metabolon standard data formates
+Description: Interface to load and export data to/from Metabolon platform using SummarizedExperiment objects.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -12,9 +12,6 @@ Depends:
     R (>= 4.0.0)
 Imports:
     SummarizedExperiment,
-    org.Hs.eg.db,
-    org.Mm.eg.db,
-    AnnotationDbi,
     readxl
 Suggests: 
     knitr,

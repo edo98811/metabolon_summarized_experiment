@@ -1,0 +1,191 @@
+---
+title: "metabolonIO"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{metabolonIO}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# setup
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r package}
+library("metabolonIO")
+```
+
+```{r packages}
+suppressPackageStartupMessages({
+  library("macrophage")
+  library("SummarizedExperiment")
+  library("limma")
+  library("edgeR")
+  library("DESeq2")
+})
+```
+
+# Path to example client data table.
+
+This is data saved in the package now, it will be needed later. The cdt path is th e path to the Client data table, in this case we took the model of a client data table and filled it up with example data
+
+```{r download-dataset}
+cdt_path <- system.file("extdata", "example_data_tables.XLSX", package = "metabolonIO")
+
+data(gse)
+rownames(gse) <- substr(rownames(gse), 1, 15) # per togliere tutto quello dopo il punto
+```
+
+
+# Setting up example data. 
+
+First step is setting up a differential expression analysis using DESeq2 and limma on the macrophage data included in the macrophage package as example, this data will be used to show how to export it to metabolon.
+
+<details>
+<summary> Setting up the data </summary>
+
+```{r DESeq-setup}
+dds <- DESeqDataSet(gse, design = ~condition)
+
+keep <- rowSums(counts(dds) >= 10) >= 6
+dds <- dds[keep, ]
+
+dds <- DESeq(dds)
+```
+
+
+```{r limma-setup}
+condition <- factor(colData(gse)[, "condition_name"])
+
+design <- model.matrix(~ 0 + condition)
+colnames(design) <- levels(condition)
+
+contrast.matrix <- makeContrasts(
+  IFNg_vs_naive = IFNg - naive,
+  levels = design
+)
+
+d0 <- DGEList(assay(gse))
+d0 <- calcNormFactors(d0)
+
+cutoff <- 1
+drop <- which(apply(cpm(d0), 1, max) < cutoff)
+d <- d0[-drop, ]
+
+matrix_to_fit_model_to <- voom(d, design, plot = F)
+# matrix_to_fit_model_to <- assay(se) # Use the assay data from the SummarizedExperiment object
+
+fit <- lmFit(matrix_to_fit_model_to, design) #
+fit2 <- contrasts.fit(fit, contrast.matrix)
+
+# View(as.data.frame(colData(se)))
+fit2 <- eBayes(fit2) 
+```
+
+```{r de-DESeq}
+res_macrophage_IFNg_vs_naive_dds <- results(dds,
+  contrast = c("condition", "IFNg", "naive"),
+  lfcThreshold = 1, alpha = 0.05
+)
+summary(res_macrophage_IFNg_vs_naive_dds)
+```
+
+```{r de-limma}
+res_macrophage_IFNg_vs_naive_limma <- topTable(fit2, coef = "IFNg_vs_naive", adjust = "fdr", number = Inf, confint = TRUE)
+```
+
+</details>
+
+# Package usage
+## Converting SummarizedExperiment or DE results to Metabolon format
+
+The requirement for this package to work is that the `CLIENT_SAMPLE_ID` is the same as the colnames of the summarized experiment.
+
+You can call these two functions to convert your data to a format that can be uploaded to the Metabolon platform in the multiomics section. It automatically formats the different expression results to the format requested by Metabolon.
+
+It works with DESeq2 and limma results, you can also provide a custom data frame with the required columns. The `cdt` argument is the path to the client data table file that you want to use to get the sample metadata.
+
+In addition to this you can also convert the assay data of a summarized experiment object to the format requested by Metabolon using the function `se_to_metabolon`.
+
+Important note: for metabolon to be able to run the pathway analysis the feature annotation must be in the format requested by them. For transcriptomics data the recommended format is ENSEMBL gene ids, for proteomics data the recommended format is UNIPROT ids. 
+
+```{r dds-to-metabolon}
+table1 <- se_to_metabolon(gse,
+  cdt = cdt_path,
+  save_file = F
+)
+
+print(head(table1[,c(1:10)]))
+
+res_1 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
+  format = "DESeqResults",
+  omics = "transcriptomics",
+  custom_colnames = NULL,
+  save_file = F
+)
+
+print(head(table1[,c(1:10)]))
+```
+## Converting DE results to Metabolon format
+
+The package works also with limma results using topTable format:
+
+```{r limma-to-metabolon}
+res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
+  format = "topTable",
+  omics = "transcriptomics",
+  custom_colnames = NULL,
+  save_file = F
+)
+
+print(head(table1[,c(1:10)]))
+
+```
+
+## Converting Metabolon client data table to SummarizedExperiment
+A central functionality is the ability to convert Metabolon Client data table files to SummarizedExperiment objects.
+You can do this using the function `cdt_to_se`, the output will be a SummarizedExperiment object that you can use in your analysis pipelines. It automatically merges the compound information and the subject metdata and adds them respectively to the rowData and colData of The SummarizedExperiment object.
+
+
+You can specify which annotation type you want to use for the rownames of the SummarizedExperiment object using the argument `rowdata_key`. Note: the compounds that do not have the specified annotation type will be removed from the final object, as the rownames cannot be duplicated or empty.
+
+The `data_type` argument allows you to select which type of data you want to load from the client data table.
+
+You can also save the output SummarizedExperiment object as an RDS file using the `output_file` argument. If it is set to `FALSE`, the object is just returned without saving, the output_file argument in this case is of course ignored.
+
+```{r metabolon-to-se}
+se <- cdt_to_se(
+  cdt = cdt_path,
+  output_file = "test/cdt_to_se_bni.rds",
+  save_file = F,
+  data_type = "batch_norm_imputed",
+  rowdata_key = "INCHIKEY"
+)
+se
+```
+
+A small trick: you can convert the SummarizedExperiment object to a SingleCellExperiment object to be able to store additional information such as dimensionality reductions in it.
+
+```{r add-pca}
+library(SingleCellExperiment)
+
+sce <- as(se, "SingleCellExperiment")
+
+# As you can see here we can add dimensionality reductions (as many as we need) to the object using the capabilities of a single cell summarized experiment
+pca_result <- prcomp(t(assay(se)))
+
+reducedDim(sce, "PCA") <- pca_result$x
+```
+
+
+# Session Information {-}
+
+This document has been generated with...
+
+```{r}
+sessionInfo()
+```
