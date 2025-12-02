@@ -2,7 +2,7 @@
 % Please edit documentation in R/results_to_metabolon.R
 \name{results_to_metabolon}
 \alias{results_to_metabolon}
-\title{Convert Results to Metabolon Format}
+\title{Convert Results to Metabolon Format.}
 \usage{
 results_to_metabolon(
   table,
@@ -10,63 +10,41 @@ results_to_metabolon(
   omics = "Transcriptomics",
   custom_colnames = NULL,
   output_file = NULL,
-  input_features = "ensembl_id",
-  organism = "Hs",
   save_file = T
 )
 }
 \arguments{
-\item{table}{A data frame containing the results of differential expression analysis.}
+\item{table}{A data frame containing the results to be converted.}
 
-\item{format}{A character string specifying the format of the input table.
-Options are "topTable" (limma), "DESeqResults" (DESeq2), "edgeR" (not yet supported),
-or "Custom". Default is "topTable".}
+\item{format}{A character string specifying the format of the input results.
+Options are \code{"DESeqResults"} (default) or \code{"topTable"}.}
 
-\item{omics}{A character string specifying the type of omics data. Default is "transcriptomics".}
+\item{omics}{A character string specifying the type of omics data.
+Options are \code{"Transcriptomics"} (default) or \code{"Proteomics"}.}
 
-\item{custom_colnames}{A character vector specifying custom column names for "Custom" format.
-Must include at least "p-value", "FDR", and "FC". Default is NULL.}
+\item{custom_colnames}{An optional character vector specifying custom column names for the output.
+If \code{NULL}, default column names will be used.}
 
-\item{output_file}{A character string specifying the output file path. If NULL and \code{save_file} is TRUE,
-a default file name will be generated. Default is NULL.}
-
-\item{input_features}{A character string specifying the type of input features.
-Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id".}
-
-\item{organism}{A character string specifying the organism. Can be "Mm" or "Hs". Default is "Hs" (Homo sapiens).}
-
-\item{save_file}{A logical value indicating whether to save the output to a file. Default is TRUE. If a path is not provided,
-a default filename will be generated based on the current date and saved in the working directory.}
+\item{output_file}{A character string specifying the path to save the output file.
+If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated. Needs to be csv!
+@param save_file A logical value indicating whether to save the output to a file.
+Default is \code{TRUE}.}
 }
 \value{
-A data frame formatted for Metabolon, with columns: Feature, Omics, p-value, FDR, and FC.
+A data frame formatted according to the standard required by Metabolon.
 }
 \description{
-This function converts differential expression analysis results
-(from limma, DESeq2, or custom formats) into a format compatible with Metabolon multi-omics module.
-}
-\details{
-The function checks the correctness of the input format and ensures that the required
-columns are present in the input table. It supports workflows for "topTable" (limma),
-"DESeqResults" (DESeq2), and "Custom" formats. The "edgeR" format is not yet supported.
+This function converts a results table into a format compatible with Metabolon data analysis.
 }
 \examples{
-# Example usage with limma::topTable results
 \dontrun{
-results <- limma::topTable(fit)
-metabolon_results <- results_to_metabolon(results, format = "topTable")
-
-# Example usage with DESeq2::results
-results <- DESeq2::results(dds)
-metabolon_results <- results_to_metabolon(results, format = "DESeqResults")
-
-# Example usage with custom format
-custom_results <- data.frame(
-  p_value = c(0.01, 0.05),
-  FDR = c(0.02, 0.06),
-  FC = c(1.5, -1.2)
+# Convert DESeqResults to Metabolon format
+results_metabolon <- results_to_metabolon(
+  table = deseq_results,
+  format = "DESeqResults",
+  omics = "Transcriptomics",
+  input_features = "gene_symbol",
+  save_file = TRUE
 )
-metabolon_results <- results_to_metabolon(custom_results, format = "Custom", 
-                                          custom_colnames = c("p_value", "FDR", "FC"))
 }
 }

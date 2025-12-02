@@ -12,9 +12,6 @@ Depends:
     R (>= 4.0.0)
 Imports:
     SummarizedExperiment,
-    org.Hs.eg.db,
-    org.Mm.eg.db,
-    AnnotationDbi,
     readxl
 Suggests: 
     knitr,

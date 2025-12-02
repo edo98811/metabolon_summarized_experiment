@@ -26,12 +26,13 @@ suppressPackageStartupMessages({
   library("limma")
   library("edgeR")
   library("DESeq2")
+  library("org.Hs.eg.db")
 })
 ```
 
 # Path to example client data table.
 
-This is data saved in the package now, it will be needed later.
+This is data saved in the package now, it will be needed later. The cdt path is th e path to the Client data table, in this case we took the model of a client data table and filled it up with example data
 
 ```{r download-dataset}
 cdt_path <- system.file("extdata", "example_data_tables.XLSX", package = "metabolonIO")
@@ -111,11 +112,11 @@ It works with DESeq2 and limma results, you can also provide a custom data frame
 
 In addition to this you can also convert the assay data of a summarized experiment object to the format requested by Metabolon using the function `se_to_metabolon`.
 
+Important note: for metabolon to be able to run the pathway analysis the feature annotation must be in the format requested by them. For transcriptomics data the recommended format is ENSEMBL gene ids, for proteomics data the recommended format is UNIPROT ids. 
+
 ```{r dds-to-metabolon}
 table1 <- se_to_metabolon(gse,
   cdt = cdt_path,
-  input_features = "ensembl_id",
-  organism = "Hs",
   save_file = F
 )
 
@@ -125,8 +126,6 @@ res_1 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
   format = "DESeqResults",
   omics = "transcriptomics",
   custom_colnames = NULL,
-  input_features = "ensembl_id",
-  organism = "Hs",
   save_file = F
 )
 
@@ -141,8 +140,6 @@ res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
   format = "topTable",
   omics = "transcriptomics",
   custom_colnames = NULL,
-  input_features = "ensembl_id",
-  organism = "Hs",
   save_file = F
 )
 
@@ -183,4 +180,13 @@ sce <- as(se, "SingleCellExperiment")
 pca_result <- prcomp(t(assay(se)))
 
 reducedDim(sce, "PCA") <- pca_result$x
+```
+
+
+# Session Information {-}
+
+This document has been generated with...
+
+```{r}
+sessionInfo()
 ```

@@ -18,7 +18,7 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
   table <- check_table(table, format)
   table <- check_columns(table, format)
 
-  # Implement the 
+  # Implement the
   results_for_metabolon <- switch(format,
     topTable = {
       data.frame(
@@ -28,7 +28,8 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
         FDR = table$adj.P.Val,
         FC = table$logFC,
         row.names = NULL,
-        stringsAsFactors = FALSE
+        stringsAsFactors = FALSE,
+        check.names = FALSE
       )
     },
     DESeqResults = {
@@ -39,7 +40,8 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
         FDR = table$padj,
         FC = table$log2FoldChange,
         row.names = NULL,
-        stringsAsFactors = FALSE
+        stringsAsFactors = FALSE,
+        check.names = FALSE
       )
     },
     Custom = {
@@ -50,10 +52,13 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
         FDR = table$FDR,
         FC = table$FC,
         row.names = NULL,
-        stringsAsFactors = FALSE
+        stringsAsFactors = FALSE,
+        check.names = FALSE
       )
     }
   )
+
+  
 
   return(results_for_metabolon)
 }

@@ -1,42 +1,30 @@
-#' @title Convert Results to Metabolon Format
-#' @description This function converts differential expression analysis results 
-#' (from limma, DESeq2, or custom formats) into a format compatible with Metabolon multi-omics module.
-#' @param table A data frame containing the results of differential expression analysis.
-#' @param format A character string specifying the format of the input table. 
-#' Options are "topTable" (limma), "DESeqResults" (DESeq2), "edgeR" (not yet supported), 
-#' or "Custom". Default is "topTable".
-#' @param omics A character string specifying the type of omics data. Default is "transcriptomics".
-#' @param custom_colnames A character vector specifying custom column names for "Custom" format. 
-#' Must include at least "p-value", "FDR", and "FC". Default is NULL.
-#' @param output_file A character string specifying the output file path. If NULL and `save_file` is TRUE, 
-#' a default file name will be generated. Default is NULL.
-#' @param input_features A character string specifying the type of input features. 
-#' Options are "gene_symbol", "uniprot_id", or "ensembl_id". Default is "ensembl_id".
-#' @param organism A character string specifying the organism. Can be "Mm" or "Hs". Default is "Hs" (Homo sapiens).
-#' @param save_file A logical value indicating whether to save the output to a file. Default is TRUE. If a path is not provided,
-#'   a default filename will be generated based on the current date and saved in the working directory.
-#' @return A data frame formatted for Metabolon, with columns: Feature, Omics, p-value, FDR, and FC.
-#' @details The function checks the correctness of the input format and ensures that the required 
-#' columns are present in the input table. It supports workflows for "topTable" (limma), 
-#' "DESeqResults" (DESeq2), and "Custom" formats. The "edgeR" format is not yet supported.
+#' Convert Results to Metabolon Format.
+#' 
+#' This function converts a results table into a format compatible with Metabolon data analysis.
+#' 
+#' @param table A data frame containing the results to be converted.
+#' @param format A character string specifying the format of the input results.
+#'   Options are `"DESeqResults"` (default) or `"topTable"`.
+#' @param omics A character string specifying the type of omics data.
+#'   Options are `"Transcriptomics"` (default) or `"Proteomics"`.
+#' @param custom_colnames An optional character vector specifying custom column names for the output.
+#'   If `NULL`, default column names will be used.
+#' @param output_file A character string specifying the path to save the output file.
+#'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated. Needs to be csv!
+#'  @param save_file A logical value indicating whether to save the output to a file.
+#'   Default is `TRUE`.
+#' @return A data frame formatted according to the standard required by Metabolon.
+#' 
 #' @examples
-#' # Example usage with limma::topTable results
 #' \dontrun{
-#' results <- limma::topTable(fit)
-#' metabolon_results <- results_to_metabolon(results, format = "topTable")
-#' 
-#' # Example usage with DESeq2::results
-#' results <- DESeq2::results(dds)
-#' metabolon_results <- results_to_metabolon(results, format = "DESeqResults")
-#' 
-#' # Example usage with custom format
-#' custom_results <- data.frame(
-#'   p_value = c(0.01, 0.05),
-#'   FDR = c(0.02, 0.06),
-#'   FC = c(1.5, -1.2)
+#' # Convert DESeqResults to Metabolon format
+#' results_metabolon <- results_to_metabolon(
+#'   table = deseq_results,
+#'   format = "DESeqResults",
+#'   omics = "Transcriptomics",
+#'   input_features = "gene_symbol",
+#'   save_file = TRUE
 #' )
-#' metabolon_results <- results_to_metabolon(custom_results, format = "Custom", 
-#'                                           custom_colnames = c("p_value", "FDR", "FC"))
 #' }
 #' @importFrom utils write.table
 #' @export
@@ -45,26 +33,13 @@ results_to_metabolon <- function(table,
                                 omics = "Transcriptomics",
                                 custom_colnames = NULL,
                                 output_file = NULL, 
-                                input_features = "ensembl_id",
-                                organism = "Hs",
                                 save_file = T) {
-  
-  # Check format argument
-  format <- match.arg(format, c("topTable", "DESeqResults", "Custom"))
 
-  # Check if organism is valid
-  if (!organism %in% c("Mm", "Hs")) {
-    stop("Invalid organism. Choose either 'Mm' (Mus musculus) or 'Hs' (Homo sapiens).")
-  }
+  # Make sure output_file is set if save_file is TRUE
   if (is.null(output_file) && save_file) output_file <- paste0("results_to_metabolon_", Sys.Date(), ".csv")
-  if (format == "edgeR") stop("edgeR format is not supported yet.")
 
   # Create the results for metabolon
   results_for_metabolon <- make_results_for_metabolon(table, format, omics, custom_colnames)
-
-  # Make the rownames conform to the metabolon format and transpose the assay
-  results_for_metabolon <- map_genes(results_for_metabolon$Feature, results_for_metabolon, input_features, organism)
-  results_for_metabolon$Feature <- rownames(results_for_metabolon)
 
   # Write the output to a file
   if (save_file) {

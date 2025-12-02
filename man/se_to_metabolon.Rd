@@ -7,47 +7,30 @@
 se_to_metabolon(
   se,
   cdt,
-  input_features = "ensembl_id",
   output_file = NULL,
-  organism = "Hs",
   save_file = TRUE,
-  sample_id_column = "CLIENT_SAMPLE_ID"
+  sample_id_column = NULL
 )
 }
 \arguments{
-\item{se}{A \code{SummarizedExperiment} (or derived) object. The input data to be converted.}
+\item{se}{A \code{SummarizedExperiment} object containing the assay data.}
 
-\item{cdt}{The client data table from metabolon.}
-
-\item{input_features}{A character string specifying the type of input features.
-Options are \code{"ensembl_id"} (default), \code{"gene_symbol"}, or \code{"uniprot_id"}.}
+\item{cdt}{A character string specifying the path to the client data table path.}
 
 \item{output_file}{A character string specifying the path to save the output file.
-If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated.}
+If \code{NULL} and \code{save_file} is \code{TRUE}, a default filename will be generated and it will be saved in the working directory.}
 
-\item{organism}{A character string specifying the organism. Default is \code{"Hs"}
-(Homo sapiens), Options are: "Mm".}
-
-\item{save_file}{A logical value indicating whether to save the output to a file.
+\item{save_file}{A logical value indicating whether to save the output to a file. Needs to be csv!
 Default is \code{TRUE}.}
 
-\item{sample_id_column}{The column in the metadata that needs to be matched to the sample id in the gse.}
-}
-\value{
-A transposed assay matrix with row names and column names formatted according to the standard required by metabolon.
+\item{sample_id_column}{A character string specifying the column name in the colData
+that contains the sample IDs matching the PARENT_SAMPLE_NAME names. Default is \code{NULL}.}
+
+\item{annotation_db}{An AnnotationDbi OrgDb object (e.g., org.Hs.eg.db::org.Hs.eg.db) for mapping input features to ENSEMBL IDs.}
 }
 \description{
 This function converts a \code{SummarizedExperiment} object into a format compatible
 with Metabolon data analysis.
-}
-\details{
-\itemize{
-\item The function checks if the input object is a \code{SummarizedExperiment}.
-\item Metadata is read from the CDT.
-\item Annotations are created based on the specified organism and input features.
-\item The assay matrix is transposed and formatted according to the metabolon standard.
-\item If \code{save_file} is \code{TRUE}, the output is written to a CSV file.
-}
 }
 \examples{
 \dontrun{
