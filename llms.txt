@@ -1,7 +1,23 @@
 # Introduction
 
-This is a package used as interface from standard bioinformatics
-pipelines to the metabolon software
+This is a package developed as interface from standard bioinformatics
+pipelines to the metabolon software.
+
+It can load metabolon data in a `SummarizedExperiment` object, which is
+a common data structure used in bioinformatics for storing
+high-throughput assay data along with associated metadata.
+
+Metabolon offers a platform for multiomics analysis. This package also
+offers an interface to it by allowing export of data in the required
+format. There are functions to export data from a summarized experiment
+as “counts” file that can be uploaded to the metabolon platform.
+
+Furthermore, results from different standard bioinfomratics pipelines,
+for example differential analysis using `DESeq2` or `limma`, can be
+exported in the required format to be uploaded to the metabolon
+platform. The results can also be just a data frame with the required
+columns. The obrained tables can be directly uploaded to the myMetabolon
+platform.
 
 # Installation
 
@@ -31,12 +47,8 @@ remotes::install_github("edo98811/metabolon_summarized_experiment")
   : Prepare results for Metabolon upload
 - [`make_rowdata()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/make_rowdata.md)
   : Clean and format the row data from the CDT file
-- [`map_genes()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/map_genes.md)
-  : Map Gene Identifiers to Ensembl IDs This function maps gene
-  identifiers (gene symbols or UniProt IDs) to Ensembl Gene IDs using
-  the appropriate organism database.
 - [`results_to_metabolon()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/results_to_metabolon.md)
-  : Convert Results to Metabolon Format
+  : Convert Results to Metabolon Format.
 - [`se_to_metabolon()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/se_to_metabolon.md)
   : Convert SummarizedExperiment to Metabolon Format
 
@@ -44,4 +56,4 @@ remotes::install_github("edo98811/metabolon_summarized_experiment")
 
 ### All vignettes
 
-- [metabolonize](https://edo98811.github.io/metabolon_summarized_experiment/articles/metabolonize.md):
+- [metabolonIO](https://edo98811.github.io/metabolon_summarized_experiment/articles/metabolonIO.md):

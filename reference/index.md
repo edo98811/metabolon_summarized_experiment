@@ -12,11 +12,7 @@
   : Prepare results for Metabolon upload
 - [`make_rowdata()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/make_rowdata.md)
   : Clean and format the row data from the CDT file
-- [`map_genes()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/map_genes.md)
-  : Map Gene Identifiers to Ensembl IDs This function maps gene
-  identifiers (gene symbols or UniProt IDs) to Ensembl Gene IDs using
-  the appropriate organism database.
 - [`results_to_metabolon()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/results_to_metabolon.md)
-  : Convert Results to Metabolon Format
+  : Convert Results to Metabolon Format.
 - [`se_to_metabolon()`](https://edo98811.github.io/metabolon_summarized_experiment/reference/se_to_metabolon.md)
   : Convert SummarizedExperiment to Metabolon Format

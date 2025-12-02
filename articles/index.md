@@ -2,4 +2,4 @@
 
 ### All vignettes
 
-- [metabolonize](https://edo98811.github.io/metabolon_summarized_experiment/articles/metabolonize.md):
+- [metabolonIO](https://edo98811.github.io/metabolon_summarized_experiment/articles/metabolonIO.md):
