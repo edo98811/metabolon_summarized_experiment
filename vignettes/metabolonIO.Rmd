@@ -26,7 +26,6 @@ suppressPackageStartupMessages({
   library("limma")
   library("edgeR")
   library("DESeq2")
-  library("org.Hs.eg.db")
 })
 ```
 
