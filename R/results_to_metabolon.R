@@ -8,7 +8,7 @@
 #' @param omics A character string specifying the type of omics data.
 #'   Options are `"Transcriptomics"` (default) or `"Proteomics"`.
 #' @param custom_colnames An optional character vector specifying custom column names for the output.
-#'   If `NULL`, default column names will be used.
+#'   If `NULL`, default column names will be used. The order of the columns must be: the column for log2 fold change, pvalue and pvalue adjusted, in this order.
 #' @param output_file A character string specifying the path to save the output file.
 #'   If `NULL` and `save_file` is `TRUE`, a default filename will be generated. Needs to be csv!
 #' @param save_file A logical value indicating whether to save the output to a file.
