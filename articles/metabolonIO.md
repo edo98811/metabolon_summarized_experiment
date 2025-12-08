@@ -4,6 +4,8 @@
 
 ``` r
 library("metabolonIO")
+#> Warning: replacing previous import 'S4Arrays::makeNindexFromArrayViewport' by
+#> 'DelayedArray::makeNindexFromArrayViewport' when loading 'SummarizedExperiment'
 ```
 
 ``` r
@@ -138,12 +140,12 @@ table1 <- se_to_metabolon(gse,
 
 print(head(table1[,c(1:10)]))
 #>                PARENT_SAMPLE_NAME ENSG00000000003 ENSG00000000005
-#> SAMEA103885102               <NA>          83.818               0
-#> SAMEA103885347               <NA>         144.156               0
-#> SAMEA103885043               <NA>          71.239               0
-#> SAMEA103885392               <NA>         130.372               0
-#> SAMEA103885182               <NA>         241.527               0
-#> SAMEA103885136               <NA>         140.124               0
+#> SAMEA103885102             TEST-1          83.818               0
+#> SAMEA103885347             TEST-2         144.156               0
+#> SAMEA103885043             TEST-3          71.239               0
+#> SAMEA103885392             TEST-4         130.372               0
+#> SAMEA103885182             TEST-5         241.527               0
+#> SAMEA103885136             TEST-6         140.124               0
 #>                ENSG00000000419 ENSG00000000457 ENSG00000000460 ENSG00000000938
 #> SAMEA103885102        1462.001         616.732         913.913         210.999
 #> SAMEA103885347        1380.000        1058.364         330.360         273.001
@@ -168,12 +170,12 @@ res_1 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_dds,
 
 print(head(table1[,c(1:10)]))
 #>                PARENT_SAMPLE_NAME ENSG00000000003 ENSG00000000005
-#> SAMEA103885102               <NA>          83.818               0
-#> SAMEA103885347               <NA>         144.156               0
-#> SAMEA103885043               <NA>          71.239               0
-#> SAMEA103885392               <NA>         130.372               0
-#> SAMEA103885182               <NA>         241.527               0
-#> SAMEA103885136               <NA>         140.124               0
+#> SAMEA103885102             TEST-1          83.818               0
+#> SAMEA103885347             TEST-2         144.156               0
+#> SAMEA103885043             TEST-3          71.239               0
+#> SAMEA103885392             TEST-4         130.372               0
+#> SAMEA103885182             TEST-5         241.527               0
+#> SAMEA103885136             TEST-6         140.124               0
 #>                ENSG00000000419 ENSG00000000457 ENSG00000000460 ENSG00000000938
 #> SAMEA103885102        1462.001         616.732         913.913         210.999
 #> SAMEA103885347        1380.000        1058.364         330.360         273.001
@@ -204,12 +206,12 @@ res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
 
 print(head(table1[,c(1:10)]))
 #>                PARENT_SAMPLE_NAME ENSG00000000003 ENSG00000000005
-#> SAMEA103885102               <NA>          83.818               0
-#> SAMEA103885347               <NA>         144.156               0
-#> SAMEA103885043               <NA>          71.239               0
-#> SAMEA103885392               <NA>         130.372               0
-#> SAMEA103885182               <NA>         241.527               0
-#> SAMEA103885136               <NA>         140.124               0
+#> SAMEA103885102             TEST-1          83.818               0
+#> SAMEA103885347             TEST-2         144.156               0
+#> SAMEA103885043             TEST-3          71.239               0
+#> SAMEA103885392             TEST-4         130.372               0
+#> SAMEA103885182             TEST-5         241.527               0
+#> SAMEA103885136             TEST-6         140.124               0
 #>                ENSG00000000419 ENSG00000000457 ENSG00000000460 ENSG00000000938
 #> SAMEA103885102        1462.001         616.732         913.913         210.999
 #> SAMEA103885347        1380.000        1058.364         330.360         273.001
@@ -335,12 +337,12 @@ sessionInfo()
 #> [13] S7_0.2.1            desc_1.4.3          readxl_1.4.5       
 #> [16] lifecycle_1.0.4     compiler_4.5.2      farver_2.1.2       
 #> [19] textshaping_1.0.4   statmod_1.5.1       codetools_0.2-20   
-#> [22] htmltools_0.5.8.1   sass_0.4.10         yaml_2.3.11        
+#> [22] htmltools_0.5.9     sass_0.4.10         yaml_2.3.11        
 #> [25] pkgdown_2.2.0       pillar_1.11.1       jquerylib_0.1.4    
 #> [28] BiocParallel_1.44.0 DelayedArray_0.36.0 cachem_1.1.0       
 #> [31] abind_1.4-8         locfit_1.5-9.12     digest_0.6.39      
 #> [34] fastmap_1.2.0       grid_4.5.2          cli_3.6.5          
-#> [37] SparseArray_1.10.3  magrittr_2.0.4      S4Arrays_1.10.0    
+#> [37] SparseArray_1.10.4  magrittr_2.0.4      S4Arrays_1.10.1    
 #> [40] scales_1.4.0        rmarkdown_2.30      XVector_0.50.0     
 #> [43] cellranger_1.1.0    ragg_1.5.0          evaluate_1.0.5     
 #> [46] knitr_1.50          rlang_1.1.6         Rcpp_1.1.0         
