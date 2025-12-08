@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   metabolonIO: metabolonIO.html
-last_built: 2025-12-08T15:11Z
+last_built: 2025-12-08T15:20Z
 urls:
   reference: https://edo98811.github.io/metabolon_summarized_experiment/reference
   article: https://edo98811.github.io/metabolon_summarized_experiment/articles

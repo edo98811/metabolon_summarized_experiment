@@ -21,8 +21,8 @@ suppressPackageStartupMessages({
 ## Path to example client data table.
 
 This is data saved in the package now, it will be needed later. The cdt
-path is th e path to the Client data table, in this case we took the
-model of a client data table and filled it up with example data
+path is th e path to the Client Data Table, in this case we took the
+model of it and filled it up with example data
 
 ``` r
 cdt_path <- system.file("extdata", "example_data_tables.XLSX", package = "metabolonIO")
@@ -33,9 +33,10 @@ rownames(gse) <- substr(rownames(gse), 1, 15) # per togliere tutto quello dopo i
 
 ## Setting up example data.
 
-First step is setting up a differential expression analysis using DESeq2
-and limma on the macrophage data included in the macrophage package as
-example, this data will be used to show how to export it to metabolon.
+First step is setting up a differential expression analysis using
+`DESeq2` and `limma` on the `macrophage` data included in the
+`macrophage` package as example, this data will be used to show how to
+export it to metabolon.
 
 Setting up the data
 
@@ -118,19 +119,19 @@ can be uploaded to the Metabolon platform in the multiomics section. It
 automatically formats the different expression results to the format
 requested by Metabolon.
 
-It works with DESeq2 and limma results, you can also provide a custom
+It works with `DESeq2` and limma results, you can also provide a custom
 data frame with the required columns. The `cdt` argument is the path to
 the client data table file that you want to use to get the sample
 metadata.
 
-In addition to this you can also convert the assay data of a summarized
-experiment object to the format requested by Metabolon using the
-function `se_to_metabolon`.
+In addition to this you can also convert the assay data of a
+`SummarizedExperiment` object to the format requested by Metabolon using
+the function `se_to_metabolon`.
 
-Important note: for metabolon to be able to run the pathway analysis the
-feature annotation must be in the format requested by them. For
-transcriptomics data the recommended format is ENSEMBL gene ids, for
-proteomics data the recommended format is UNIPROT ids.
+Important note: for myMetabolon to be able to run the pathway analysis
+the feature annotation must be in the format requested by them. For
+transcriptomics data the recommended format is `ENSEMBL` gene ids, for
+proteomics data the recommended format is `UNIPROT` ids.
 
 ``` r
 table1 <- se_to_metabolon(gse,
@@ -194,7 +195,7 @@ print(head(table1[,c(1:10)]))
 
 ### Converting DE results to Metabolon format
 
-The package works also with limma results using topTable format:
+The package works also with `limma` results using `topTable` format:
 
 ``` r
 res_2 <- results_to_metabolon(res_macrophage_IFNg_vs_naive_limma,
@@ -231,14 +232,15 @@ print(head(table1[,c(1:10)]))
 ### Converting Metabolon client data table to SummarizedExperiment
 
 A central functionality is the ability to convert Metabolon Client data
-table files to SummarizedExperiment objects. You can do this using the
-function `cdt_to_se`, the output will be a SummarizedExperiment object
+table files to `SummarizedExperiment` objects. You can do this using the
+function `cdt_to_se`, the output will be a `SummarizedExperiment` object
 that you can use in your analysis pipelines. It automatically merges the
 compound information and the subject metdata and adds them respectively
-to the rowData and colData of The SummarizedExperiment object.
+to the rowData and colData of The `SummarizedExperiment` object.
 
-You can specify which annotation type you want to use for the rownames
-of the SummarizedExperiment object using the argument `rowdata_key`.
+You can specify which annotation type you want to use for the `rownames`
+of the `SummarizedExperiment` object using the argument `rowdata_key`.
+
 Note: the compounds that do not have the specified annotation type will
 be removed from the final object, as the rownames cannot be duplicated
 or empty.

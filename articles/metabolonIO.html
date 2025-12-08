@@ -79,8 +79,8 @@
 <h2 id="path-to-example-client-data-table-">Path to example client data table.<a class="anchor" aria-label="anchor" href="#path-to-example-client-data-table-"></a>
 </h2>
 <p>This is data saved in the package now, it will be needed later. The
-cdt path is th e path to the Client data table, in this case we took the
-model of a client data table and filled it up with example data</p>
+cdt path is th e path to the Client Data Table, in this case we took the
+model of it and filled it up with example data</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cdt_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_data_tables.XLSX"</span>, package <span class="op">=</span> <span class="st">"metabolonIO"</span><span class="op">)</span></span>
 <span></span>
@@ -91,7 +91,8 @@ model of a client data table and filled it up with example data</p>
 <h2 id="setting-up-example-data-">Setting up example data.<a class="anchor" aria-label="anchor" href="#setting-up-example-data-"></a>
 </h2>
 <p>First step is setting up a differential expression analysis using
-DESeq2 and limma on the macrophage data included in the macrophage
+<code>DESeq2</code> and <code>limma</code> on the
+<code>macrophage</code> data included in the <code>macrophage</code>
 package as example, this data will be used to show how to export it to
 metabolon.</p>
 <details><summary>
@@ -171,17 +172,18 @@ summarized experiment.</p>
 that can be uploaded to the Metabolon platform in the multiomics
 section. It automatically formats the different expression results to
 the format requested by Metabolon.</p>
-<p>It works with DESeq2 and limma results, you can also provide a custom
-data frame with the required columns. The <code>cdt</code> argument is
-the path to the client data table file that you want to use to get the
-sample metadata.</p>
+<p>It works with <code>DESeq2</code> and limma results, you can also
+provide a custom data frame with the required columns. The
+<code>cdt</code> argument is the path to the client data table file that
+you want to use to get the sample metadata.</p>
 <p>In addition to this you can also convert the assay data of a
-summarized experiment object to the format requested by Metabolon using
-the function <code>se_to_metabolon</code>.</p>
-<p>Important note: for metabolon to be able to run the pathway analysis
-the feature annotation must be in the format requested by them. For
-transcriptomics data the recommended format is ENSEMBL gene ids, for
-proteomics data the recommended format is UNIPROT ids.</p>
+<code>SummarizedExperiment</code> object to the format requested by
+Metabolon using the function <code>se_to_metabolon</code>.</p>
+<p>Important note: for myMetabolon to be able to run the pathway
+analysis the feature annotation must be in the format requested by them.
+For transcriptomics data the recommended format is <code>ENSEMBL</code>
+gene ids, for proteomics data the recommended format is
+<code>UNIPROT</code> ids.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/se_to_metabolon.html">se_to_metabolon</a></span><span class="op">(</span><span class="va">gse</span>,</span>
 <span>  cdt <span class="op">=</span> <span class="va">cdt_path</span>,</span>
@@ -244,7 +246,8 @@ proteomics data the recommended format is UNIPROT ids.</p>
 <div class="section level3">
 <h3 id="converting-de-results-to-metabolon-format">Converting DE results to Metabolon format<a class="anchor" aria-label="anchor" href="#converting-de-results-to-metabolon-format"></a>
 </h3>
-<p>The package works also with limma results using topTable format:</p>
+<p>The package works also with <code>limma</code> results using
+<code>topTable</code> format:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/results_to_metabolon.html">results_to_metabolon</a></span><span class="op">(</span><span class="va">res_macrophage_IFNg_vs_naive_limma</span>,</span>
 <span>  format <span class="op">=</span> <span class="st">"topTable"</span>,</span>
@@ -280,17 +283,18 @@ proteomics data the recommended format is UNIPROT ids.</p>
 <h3 id="converting-metabolon-client-data-table-to-summarizedexperiment">Converting Metabolon client data table to SummarizedExperiment<a class="anchor" aria-label="anchor" href="#converting-metabolon-client-data-table-to-summarizedexperiment"></a>
 </h3>
 <p>A central functionality is the ability to convert Metabolon Client
-data table files to SummarizedExperiment objects. You can do this using
-the function <code>cdt_to_se</code>, the output will be a
-SummarizedExperiment object that you can use in your analysis pipelines.
-It automatically merges the compound information and the subject metdata
-and adds them respectively to the rowData and colData of The
-SummarizedExperiment object.</p>
+data table files to <code>SummarizedExperiment</code> objects. You can
+do this using the function <code>cdt_to_se</code>, the output will be a
+<code>SummarizedExperiment</code> object that you can use in your
+analysis pipelines. It automatically merges the compound information and
+the subject metdata and adds them respectively to the rowData and
+colData of The <code>SummarizedExperiment</code> object.</p>
 <p>You can specify which annotation type you want to use for the
-rownames of the SummarizedExperiment object using the argument
-<code>rowdata_key</code>. Note: the compounds that do not have the
-specified annotation type will be removed from the final object, as the
-rownames cannot be duplicated or empty.</p>
+<code>rownames</code> of the <code>SummarizedExperiment</code> object
+using the argument <code>rowdata_key</code>.</p>
+<p>Note: the compounds that do not have the specified annotation type
+will be removed from the final object, as the rownames cannot be
+duplicated or empty.</p>
 <p>The <code>data_type</code> argument allows you to select which type
 of data you want to load from the client data table.</p>
 <p>You can also save the output SummarizedExperiment object as an RDS
