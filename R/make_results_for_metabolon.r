@@ -16,9 +16,9 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
 
   # Check if the table has the required columns
   table <- check_table(table, format)
-  table <- check_columns(table, format)
+  table <- check_columns(table, format, custom_colnames)
 
-  # Implement the 
+  # Implement the
   results_for_metabolon <- switch(format,
     topTable = {
       data.frame(
@@ -28,7 +28,8 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
         FDR = table$adj.P.Val,
         FC = table$logFC,
         row.names = NULL,
-        stringsAsFactors = FALSE
+        stringsAsFactors = FALSE,
+        check.names = FALSE
       )
     },
     DESeqResults = {
@@ -39,7 +40,8 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
         FDR = table$padj,
         FC = table$log2FoldChange,
         row.names = NULL,
-        stringsAsFactors = FALSE
+        stringsAsFactors = FALSE,
+        check.names = FALSE
       )
     },
     Custom = {
@@ -50,20 +52,27 @@ make_results_for_metabolon <- function(table, format, omics, custom_colnames = N
         FDR = table$FDR,
         FC = table$FC,
         row.names = NULL,
-        stringsAsFactors = FALSE
+        stringsAsFactors = FALSE,
+        check.names = FALSE
       )
     }
   )
 
+  
+
   return(results_for_metabolon)
 }
 
-check_columns <- function(table, format) {
+check_columns <- function(table, format, custom_colnames) {
+
+  if (format == "Custom" && is.null(custom_colnames)) {
+    stop("For 'Custom' format, 'custom_colnames' must be provided.")
+  }
   # Define the required columns for each format
   required_columns <- switch(format,
     topTable = c("logFC", "P.Value", "adj.P.Val"),
     DESeqResults = c("log2FoldChange", "pvalue", "padj"),
-    Custom = c("p-value", "FDR", "FC")
+    Custom = custom_colnames
   )
 
   missing_columns <- setdiff(required_columns, colnames(table))

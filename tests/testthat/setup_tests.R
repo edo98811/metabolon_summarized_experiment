@@ -1,6 +1,6 @@
 # ---- Setup ----
 # Load required libraries
-library(metabolonize)
+library(metabolonIO)
 suppressPackageStartupMessages({
   library(macrophage)
   library(SummarizedExperiment)
@@ -10,13 +10,13 @@ suppressPackageStartupMessages({
 })
 
 # ---- Load Dataset ----
-cdt_path <- system.file("extdata", "example_data_tables.XLSX", package = "metabolonize")
+cdt_path <- system.file("extdata", "example_data_tables.XLSX", package = "metabolonIO")
 
 data(gse)
 # Trim rownames to first 15 characters
 rownames(gse) <- substr(rownames(gse), 1, 15)
 
-# Note: CLIENT_SAMPLE_ID must match colnames of the SummarizedExperiment for metabolonize functions
+# Note: CLIENT_SAMPLE_ID must match colnames of the SummarizedExperiment for metabolonIO functions
 
 # ---- DESeq2 Analysis ----
 dds <- DESeqDataSet(gse, design = ~condition)

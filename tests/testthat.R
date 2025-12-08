@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(metabolonize)
+library(metabolonIO)
 
-test_check("metabolonize")
+test_check("metabolonIO")
